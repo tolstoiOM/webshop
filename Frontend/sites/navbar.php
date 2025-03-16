@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
     <div class="container">
         <!-- Logo -->
-        <a class="navbar-brand" href="../sites/index.html">
+        <a class="navbar-brand" href="../sites/index.php">
             <img src="../res/img/logo.png" alt="Harry Potter Shop" height="50" />
         </a>
 
