@@ -23,3 +23,10 @@ footer {
   .nav-link:hover {
     text-decoration: underline;
   }
+
+.hero-image {
+    background: url('../img/shop.jpg') no-repeat center center;
+    background-size: cover;
+    height: 500px;
+    width: 100%;
+  }

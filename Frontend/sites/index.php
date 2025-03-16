@@ -16,9 +16,8 @@
   <?php include '../sites/navbar.php'; ?>
 
   <!-- Hero Section -->
-  <header class="bg-primary text-white text-center py-5">
-    <h1>Welcome to My Webshop</h1>
-    <p>Your one-stop shop for amazing products!</p>
+  <header class="bg-primary text-white text-center py-5 hero-image">
+
   </header>
 
   <!-- Product Listing -->
