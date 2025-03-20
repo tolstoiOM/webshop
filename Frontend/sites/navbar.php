@@ -1,3 +1,4 @@
+<!-- filepath: c:\xampp\htdocs\webshop\Frontend\sites\navbar.php -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
     <div class="container">
         <!-- Logo -->
@@ -25,12 +26,13 @@
             </ul>
         </div>
 
-        <!-- Icons -->
-        <div class="d-flex">
+        <!-- Icons and Login Button -->
+        <div class="d-flex align-items-center">
             <a href="#" class="nav-link text-dark p-2"><i class="fas fa-search"></i></a>
             <a href="#" class="nav-link text-dark p-2"><i class="fas fa-heart"></i></a>
             <a href="cart.php" class="nav-link text-dark p-2"><i class="fas fa-shopping-bag"></i></a>
-            <a href="login.php" class="nav-link text-dark p-2"><i class="fas fa-user"></i></a>
+            <a href="#" class="nav-link text-dark p-2"><i class="fas fa-user"></i></a>
+            <a href="login.php" class="btn btn-dark ms-3">Login</a>
         </div>
     </div>
 </nav>
