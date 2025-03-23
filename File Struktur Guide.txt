@@ -1,0 +1,130 @@
+✅ Optimierte Nutzung deiner Ordnerstruktur
+🔷 Backend/
+
+Hier landet alle serverseitige Logik, API-Routing, Klassen, DB-Anbindung usw.
+→ Du kannst mit einer index.php als Einstiegspunkt (API-Handler) arbeiten.
+📁 Backend/config/
+
+Zweck: Einstellungen & Konstanten
+Dateien:
+
+    config.php → DB-Zugangsdaten, API-Keys, Base-URLs etc.
+    constants.php → Zentrale Definition von Rollen, Fehlercodes, etc.
+
+📁 Backend/logic/
+
+Zweck: Geschäftslogik, also alles, was "arbeitet" (z. B. Registrieren, Login, Produkte verwalten)
+Dateien:
+
+    AuthLogic.php → Login, Registrierung
+    ProductLogic.php → Produktverwaltung
+    UserLogic.php → Nutzeraktionen
+    UploadHandler.php → File-Uploads
+
+Diese Klassen sollen rein mit Models kommunizieren und JSON zurückgeben.
+📁 Backend/models/
+
+Zweck: Objektklassen, die deine Datenstrukturen repräsentieren
+Dateien:
+
+    User.php → User-Klasse mit Eigenschaften und Getter/Setter
+    Product.php → Produktklasse mit Bild, Preis, Beschreibung
+    Database.php → Zentrale DB-Serviceklasse (PDO + Methoden wie getUserById, getProducts, etc.)
+
+📁 Backend/productpictures/
+
+Zweck: Upload-Verzeichnis für Produktbilder
+→ Nur vom Server beschrieben!
+→ Wichtig: .htaccess reinlegen zum Schutz!
+🔷 Frontend/
+
+Hier liegt alles, was der Browser sieht: HTML, CSS, JavaScript
+📁 Frontend/sites/
+
+Zweck: Die eigentlichen Seiten des Shops (UI)
+Dateien:
+
+    index.php → Landingpage mit JS-Fetch von Produkten (per API)
+    login.php → Login-Formular
+    registration.php → Registrierung
+    navbar.php → ggf. eingebunden per PHP include() oder clientseitig geladen
+
+⚠️ Diese Seiten sollten ausschließlich per JS mit dem Backend reden (AJAX, fetch, JSON).
+📁 Frontend/js/
+
+Zweck: Clientseitige Logik
+Dateien:
+
+    script.js → Hier kommen alle AJAX-Calls hin (z. B. Login-Request, Produkte holen etc.)
+
+Optional:
+
+    api.js → Für saubere Trennung: alle fetch()-Funktionen hier als Modul
+
+📁 Frontend/res/css/
+
+    style.css → Dein eigenes CSS zusätzlich zu Bootstrap
+    (→ Bootstrap kommt über CDN oder als bootstrap.min.css rein)
+
+📁 Frontend/res/img/
+
+    logo.png, shop.jpg → Nur statische Bilder, die für das Layout gebraucht werden
+
+📡 Datenfluss: So läuft's sauber und modern
+
+    Frontend/sites/index.php ruft per fetch() eine API auf:
+
+fetch('../../Backend/logic/ProductLogic.php?action=getAll')
+  .then(res => res.json())
+  .then(data => renderProducts(data));
+
+ProductLogic.php verarbeitet das Request und gibt JSON zurück:
+
+    header('Content-Type: application/json');
+    echo json_encode($productService->getAllProducts());
+
+    Der ProductService nutzt Database.php, um aus der Datenbank zu lesen.
+
+💡 Objektorientierter Aufbau (Beispiel Product.php)
+
+class Product {
+    private $id;
+    private $name;
+    private $description;
+    private $price;
+    private $imagePath;
+
+    public function __construct($id, $name, $description, $price, $imagePath) {
+        // ...
+    }
+
+    // Getter, Setter etc.
+}
+
+Und dann z. B. im ProductLogic.php:
+
+$products = $db->getAllProducts(); // gibt Array von Product-Objekten zurück
+echo json_encode(array_map(fn($p) => $p->toArray(), $products));
+
+✨ Optional – empfohlene Ergänzungen:
+Ordner/File	Zweck
+Backend/api.php	Einstiegspunkt für alle Requests (Router)
+Backend/helpers/	Kleine Hilfsfunktionen (z. B. für Input-Validation)
+Frontend/js/api.js	Modul mit allen fetch()-Funktionen
+.htaccess	Für Schutz von Uploadordnern
+✅ Fazit
+
+Deine Struktur ist bereits gut – mit ein paar klaren Regeln kannst du sie perfekt nutzen:
+
+    Backend = nur Logik und JSON-Antworten
+    Frontend = alles, was UI betrifft
+    AJAX über fetch() → Kommunikation über klare API-Endpunkte
+    Objektorientierung für Datenhaltung und Services
+
+Wenn du magst, helfe ich dir auch gern beim Aufsetzen von:
+
+    einer API-Routing-Datei
+    einem Beispiel für DB-Verbindung + Insert/Select
+    einem fetch() mit Fehlerbehandlung in JS
+
+Sag einfach Bescheid 😊
