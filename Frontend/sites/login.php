@@ -14,6 +14,18 @@
 
     <?php include '../sites/navbar.php'; ?>
 
+    <?php if (isset($_GET['error'])): ?>
+        <div class="alert alert-danger text-center">
+            <?php echo htmlspecialchars($_GET['error']); ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['login'])): ?>
+        <div class="alert alert-success text-center">
+            Login successful! Welcome back.
+        </div>
+    <?php endif; ?>
+
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6">
@@ -22,7 +34,7 @@
                         <h3>Login</h3>
                     </div>
                     <div class="card-body">
-                        <form action="login_process.php" method="POST">
+                        <form action="/webshop/Backend/logic/login_process.php" method="POST">
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email address</label>
                                 <input type="email" class="form-control" id="email" name="email" required>
@@ -38,12 +50,13 @@
                             <div class="d-grid">
                                 <button type="submit" class="btn btn-primary">Login</button>
                             </div>
-                        </form>
+                            </action=>
                     </div>
                     <div class="card-footer text-center">
                         <a href="registration.php">Don't have an account? Register</a>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>

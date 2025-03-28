@@ -20,7 +20,7 @@
             <h3>Register</h3>
           </div>
           <div class="card-body">
-            <form action="register_process.php" method="POST">
+            <form action="/webshop/Backend/logic/register_process.php" method="POST">
               <!-- Salutation -->
               <div class="mb-3">
                 <label for="salutation" class="form-label">Salutation</label>
@@ -92,6 +92,17 @@
         </div>
       </div>
     </div>
+    <?php if (isset($_GET['error'])): ?>
+      <div class="alert alert-danger text-center">
+        <?php echo htmlspecialchars($_GET['error']); ?>
+      </div>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['success'])): ?>
+      <div class="alert alert-success text-center">
+        Registration successful! You can now <a href="login.php">login</a>.
+      </div>
+    <?php endif; ?>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
