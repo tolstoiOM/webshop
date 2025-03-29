@@ -1,7 +1,7 @@
 $(document).ready(function() {
     // Produkte und Kategorien laden
     loadCategories();
-    loadProducts();
+    loadProducts('all'); // Standardmäßig alle Produkte laden
 
     // Kategorien laden
     function loadCategories() {
@@ -12,56 +12,82 @@ $(document).ready(function() {
             success: function(data) {
                 let categories = JSON.parse(data);
                 let categorySelect = $('#category-select');
+
+                // "Alles"-Kategorie hinzufügen
+                categorySelect.append(`<option value="all">Alles</option>`);
+
+                // Dynamisch geladene Kategorien hinzufügen
                 categories.forEach(category => {
                     categorySelect.append(`<option value="${category.id}">${category.name}</option>`);
                 });
+            },
+            error: function() {
+                alert('Fehler beim Laden der Kategorien.');
             }
         });
     }
 
-    // Produkte basierend auf der ausgewählten Kategorie laden
-    function loadProducts() {
-        let categoryId = $('#category-select').val();
+    // Produkte laden
+    function loadProducts(categoryId) {
         $.ajax({
             url: '../../Backend/logic/ProductLogic.php',
             method: 'GET',
             data: { action: 'getProducts', categoryId: categoryId },
             success: function(data) {
                 let products = JSON.parse(data);
-                $('#products').empty();
-                products.forEach(product => {
-                    $('#products').append(`
-                        <div class="product">
-                            <img src="${product.image_path}" alt="${product.name}">
-                            <h4>${product.name}</h4>
-                            <p>${product.description}</p>
-                            <p>Preis: €${product.price}</p>
-                            <p>Bewertung: ${product.rating}</p>
-                            <button class="add-to-cart" data-id="${product.id}">In den Warenkorb legen</button>
-                        </div>
-                    `);
-                });
+                let productContainer = $('#products');
+                productContainer.empty(); // Container leeren
 
-                // Warenkorb Funktionalität (AJAX)
-                $('.add-to-cart').click(function() {
-                    let productId = $(this).data('id');
-                    $.ajax({
-                        url: '../../Backend/logic/ProductLogic.php',
-                        method: 'POST',
-                        data: { action: 'addToCart', productId: productId },
-                        success: function(data) {
-                            let cartCount = JSON.parse(data).cartCount;
-                            $('#cart-count').text(cartCount);
-                        }
+                if (products.length > 0) {
+                    products.forEach(product => {
+                        productContainer.append(`
+                            <div class="col-md-4">
+                                <div class="card mb-4">
+                                    <img src="${product.image_path}" class="card-img-top" alt="${product.name}">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${product.name}</h5>
+                                        <p class="card-text">${product.description}</p>
+                                        <p class="card-text"><strong>Preis:</strong> €${product.price}</p>
+                                        <a href="product.php?id=${product.id}" class="btn btn-primary">Details</a>
+                                        <button class="btn btn-success add-to-cart" data-id="${product.id}">In den Warenkorb</button>
+                                    </div>
+                                </div>
+                            </div>
+                        `);
                     });
-                });
+
+                    // Warenkorb-Logik
+                    $('.add-to-cart').click(function() {
+                        let productId = $(this).data('id');
+                        $.ajax({
+                            url: '../../Backend/logic/ProductLogic.php',
+                            method: 'POST',
+                            data: { action: 'addToCart', productId: productId },
+                            success: function(data) {
+                                let response = JSON.parse(data);
+                                let cartCount = response.cartCount;
+                                $('#cart-count').text(cartCount); // Warenkorb-Anzeige aktualisieren
+                                alert('Produkt wurde dem Warenkorb hinzugefügt!');
+                            },
+                            error: function() {
+                                alert('Fehler beim Hinzufügen zum Warenkorb.');
+                            }
+                        });
+                    });
+                } else {
+                    productContainer.append('<p class="text-center">Keine Produkte verfügbar.</p>');
+                }
+            },
+            error: function() {
+                alert('Fehler beim Laden der Produkte.');
             }
         });
     }
 
-    // Kategorienwechsel: Lade die Produkte der neuen Kategorie
+    // Kategorienwechsel: Produkte basierend auf der ausgewählten Kategorie laden
     $('#category-select').change(function() {
-        loadProducts();
+        let categoryId = $(this).val();
+        loadProducts(categoryId);
     });
 
     // Produktsuche
@@ -86,7 +112,15 @@ $(document).ready(function() {
                         </div>
                     `);
                 });
+            },
+            error: function() {
+                alert('Fehler beim Suchen der Produkte.');
             }
         });
+    }
+
+    // Prüfen, ob wir uns auf der index.php befinden
+    if (window.location.pathname.includes('../Frontend/sites/index.php')) {
+        loadProducts('all'); // Alle Produkte laden
     }
 });

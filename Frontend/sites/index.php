@@ -28,6 +28,8 @@ if ($result && $result->num_rows > 0) {
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
   <link rel="stylesheet" href="../res/css/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="../js/script.js" defer></script>
 
 </head>
 
@@ -43,27 +45,11 @@ if ($result && $result->num_rows > 0) {
 
   <!-- Product Listing -->
   <section class="container my-5">
-    <h2 class="text-center mb-4">Our Products</h2>
-    <div class="row" id="product-container">
-    <?php if (!empty($products)): ?>
-                <?php foreach ($products as $product): ?>
-                    <div class="col-md-4">
-                        <div class="card mb-4">
-                            <img src="<?php echo htmlspecialchars($product['image_path']); ?>" class="card-img-top" alt="<?php echo htmlspecialchars($product['name']); ?>">
-                            <div class="card-body">
-                                <h5 class="card-title"><?php echo htmlspecialchars($product['name']); ?></h5>
-                                <p class="card-text"><?php echo htmlspecialchars($product['description']); ?></p>
-                                <p class="card-text"><strong>Preis:</strong> €<?php echo htmlspecialchars($product['price']); ?></p>
-                                <a href="product.php?id=<?php echo htmlspecialchars($product['id']); ?>" class="btn btn-primary">Details</a>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <p class="text-center">Keine Produkte verfügbar.</p>
-            <?php endif; ?>
-    </div>
-  </section>
+        <h2 class="text-center mb-4">Our Products</h2>
+        <div id="products" class="row">
+            <!-- Produkte werden hier dynamisch geladen -->
+        </div>
+    </section>
 
   <!-- Footer -->
   <footer class="bg-dark text-white text-center py-3">

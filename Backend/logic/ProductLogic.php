@@ -7,14 +7,25 @@ if (isset($_GET['action'])) {
     $action = $_GET['action'];
 
     if ($action == 'getCategories') {
+        // Alle Kategorien abrufen
         $stmt = $pdo->query("SELECT * FROM categories");
         echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
     } elseif ($action == 'getProducts') {
+        // Produkte basierend auf der Kategorie abrufen
         $categoryId = $_GET['categoryId'];
-        $stmt = $pdo->prepare("SELECT * FROM products WHERE category_id = ?");
-        $stmt->execute([$categoryId]);
-        echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
+
+        if ($categoryId === 'all') {
+            // Alle Produkte abrufen, wenn "Alles" ausgewählt ist
+            $stmt = $pdo->query("SELECT * FROM products");
+            echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
+        } else {
+            // Produkte einer bestimmten Kategorie abrufen
+            $stmt = $pdo->prepare("SELECT * FROM products WHERE category_id = ?");
+            $stmt->execute([$categoryId]);
+            echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
+        }
     } elseif ($action == 'searchProducts') {
+        // Produkte basierend auf einer Suchanfrage abrufen
         $query = "%" . $_GET['query'] . "%";
         $stmt = $pdo->prepare("SELECT * FROM products WHERE name LIKE ?");
         $stmt->execute([$query]);
