@@ -81,16 +81,40 @@ if (!$user) {
                 <p><strong>Email:</strong> <?php echo htmlspecialchars($user['email']); ?></p>
                 <p><strong>Username:</strong> <?php echo htmlspecialchars($user['username']); ?></p>
             </div>
-            <!-- Button zum Öffnen des Modals -->
+            <!-- Button zum Öffnen des Passwort-Modals -->
             <div class="card-footer text-center">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#passwordModal">
                     Daten bearbeiten
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Modal -->
+    <!-- Passwortabfrage Modal -->
+    <div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="passwordModalLabel">Passwort bestätigen</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="passwordForm">
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Passwort</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                            <button type="button" class="btn btn-primary" id="checkPasswordButton">Bestätigen</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bearbeitungsmodal -->
     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -103,7 +127,6 @@ if (!$user) {
                         <div class="mb-3">
                             <label for="field" class="form-label">Feld auswählen</label>
                             <select class="form-select" id="field" name="field" required>
-                                <option value="salutation">Salutation</option>
                                 <option value="first_name">First Name</option>
                                 <option value="last_name">Last Name</option>
                                 <option value="address">Address</option>
@@ -111,9 +134,10 @@ if (!$user) {
                                 <option value="city">City</option>
                                 <option value="email">Email</option>
                                 <option value="username">Username</option>
+                                <option value="salutation">Salutation</option>
                             </select>
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-3" id="newValueContainer">
                             <label for="newValue" class="form-label">Neuer Wert</label>
                             <input type="text" class="form-control" id="newValue" name="newValue" required>
                         </div>
@@ -129,6 +153,48 @@ if (!$user) {
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('checkPasswordButton').addEventListener('click', function () {
+            const password = document.getElementById('password').value;
+
+            // Simulierte Passwortprüfung (Backend-Integration erforderlich)
+            if (password === "test123") { // Beispiel: Ersetzen Sie dies durch eine echte Prüfung
+                const passwordModal = bootstrap.Modal.getInstance(document.getElementById('passwordModal'));
+                passwordModal.hide(); // Passwort-Modal schließen
+
+                const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+                editModal.show(); // Bearbeitungsmodal öffnen
+            } else {
+                alert("Falsches Passwort. Bitte versuchen Sie es erneut.");
+            }
+        });
+
+        document.getElementById('field').addEventListener('change', function () {
+            const field = this.value;
+            const newValueContainer = document.getElementById('newValueContainer');
+
+            // Entferne das aktuelle Eingabefeld
+            newValueContainer.innerHTML = '';
+
+            if (field === 'salutation') {
+                // Dropdown für Salutation
+                newValueContainer.innerHTML = `
+                    <label for="newValue" class="form-label">Neuer Wert</label>
+                    <select class="form-select" id="newValue" name="newValue" required>
+                        <option value="Mr.">Mr.</option>
+                        <option value="Ms.">Ms.</option>
+                        <option value="Other">Other</option>
+                    </select>
+                `;
+            } else {
+                // Standard-Textfeld für andere Felder
+                newValueContainer.innerHTML = `
+                    <label for="newValue" class="form-label">Neuer Wert</label>
+                    <input type="text" class="form-control" id="newValue" name="newValue" required>
+                `;
+            }
+        });
+    </script>
 </body>
 
 </html>
