@@ -1,36 +1,92 @@
-document.addEventListener("DOMContentLoaded", function() {
-    fetchProducts();
-});
+$(document).ready(function() {
+    // Produkte und Kategorien laden
+    loadCategories();
+    loadProducts();
 
-function fetchProducts() {
-    fetch("backend/get_products.php")
-        .then(response => response.json())
-        .then(data => {
-            let container = document.getElementById("product-container");
-            container.innerHTML = "";
+    // Kategorien laden
+    function loadCategories() {
+        $.ajax({
+            url: '../../Backend/logic/ProductLogic.php',
+            method: 'GET',
+            data: { action: 'getCategories' },
+            success: function(data) {
+                let categories = JSON.parse(data);
+                let categorySelect = $('#category-select');
+                categories.forEach(category => {
+                    categorySelect.append(`<option value="${category.id}">${category.name}</option>`);
+                });
+            }
+        });
+    }
 
-            data.forEach(product => {
-                let productCard = `
-                    <div class="col-md-3">
-                        <div class="card">
-                            <img src="uploads/${product.image}" class="card-img-top" alt="${product.name}">
-                            <div class="card-body">
-                                <h5 class="card-title">${product.name}</h5>
-                                <p class="card-text">${product.price} €</p>
-                                <button class="btn btn-primary" onclick="addToCart(${product.id})">Add to Cart</button>
-                            </div>
+    // Produkte basierend auf der ausgewählten Kategorie laden
+    function loadProducts() {
+        let categoryId = $('#category-select').val();
+        $.ajax({
+            url: '../../Backend/logic/ProductLogic.php',
+            method: 'GET',
+            data: { action: 'getProducts', categoryId: categoryId },
+            success: function(data) {
+                let products = JSON.parse(data);
+                $('#products').empty();
+                products.forEach(product => {
+                    $('#products').append(`
+                        <div class="product">
+                            <img src="${product.image_path}" alt="${product.name}">
+                            <h4>${product.name}</h4>
+                            <p>${product.description}</p>
+                            <p>Preis: €${product.price}</p>
+                            <p>Bewertung: ${product.rating}</p>
+                            <button class="add-to-cart" data-id="${product.id}">In den Warenkorb legen</button>
                         </div>
-                    </div>
-                `;
-                container.innerHTML += productCard;
-            });
-        });
-}
+                    `);
+                });
 
-function addToCart(productId) {
-    fetch("backend/add_to_cart.php?id=" + productId)
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById("cart-count").innerText = data;
+                // Warenkorb Funktionalität (AJAX)
+                $('.add-to-cart').click(function() {
+                    let productId = $(this).data('id');
+                    $.ajax({
+                        url: '../../Backend/logic/ProductLogic.php',
+                        method: 'POST',
+                        data: { action: 'addToCart', productId: productId },
+                        success: function(data) {
+                            let cartCount = JSON.parse(data).cartCount;
+                            $('#cart-count').text(cartCount);
+                        }
+                    });
+                });
+            }
         });
-}
+    }
+
+    // Kategorienwechsel: Lade die Produkte der neuen Kategorie
+    $('#category-select').change(function() {
+        loadProducts();
+    });
+
+    // Produktsuche
+    function searchProducts() {
+        let query = $('#search-input').val();
+        $.ajax({
+            url: '../../Backend/logic/ProductLogic.php',
+            method: 'GET',
+            data: { action: 'searchProducts', query: query },
+            success: function(data) {
+                let products = JSON.parse(data);
+                $('#products').empty();
+                products.forEach(product => {
+                    $('#products').append(`
+                        <div class="product">
+                            <img src="${product.image_path}" alt="${product.name}">
+                            <h4>${product.name}</h4>
+                            <p>${product.description}</p>
+                            <p>Preis: €${product.price}</p>
+                            <p>Bewertung: ${product.rating}</p>
+                            <button class="add-to-cart" data-id="${product.id}">In den Warenkorb legen</button>
+                        </div>
+                    `);
+                });
+            }
+        });
+    }
+});

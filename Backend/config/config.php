@@ -3,8 +3,8 @@
 
 $host = 'localhost'; // Database host
 $dbname = 'webshop'; // Database name
-$username = 'bif1user'; // Database username
-$password = 'marko123'; // Database password
+$username = 'webprojectuser'; // Database username
+$password = 'xSnsN)F3!wg[vbPk'; // Database password
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);

@@ -22,7 +22,7 @@ session_start(); // Start the session to access session variables
                     <a class="nav-link text-dark" href="#">Houses</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark" href="#">Shop</a>
+                    <a class="nav-link text-dark" href="/webshop/Frontend/sites/shop.php">Shop</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-dark" href="#">Gifts</a>
@@ -34,7 +34,7 @@ session_start(); // Start the session to access session variables
         <div class="d-flex align-items-center">
             <a href="#" class="nav-link text-dark p-2"><i class="fas fa-search"></i></a>
             <a href="#" class="nav-link text-dark p-2"><i class="fas fa-heart"></i></a>
-            <a href="cart.php" class="nav-link text-dark p-2"><i class="fas fa-shopping-bag"></i></a>
+            <a href="cart.php" class="nav-link text-dark p-2"><i class="fas fa-shopping-bag"> (<span id="cart-count">0</span>)</i></a>
             <a href="#" class="nav-link text-dark p-2"><i class="fas fa-user"></i></a>
 
             <?php if (isset($_SESSION['user_id'])): ?>
