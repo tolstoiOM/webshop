@@ -1,42 +1,54 @@
 body {
-    font-family: Arial, sans-serif;
+  font-family: Arial, sans-serif;
 }
 
 .card {
-    transition: transform 0.2s;
+  transition: transform 0.2s;
 }
 
 .card:hover {
-    transform: scale(1.05);
+  transform: scale(1.05);
 }
 
 footer {
-    position: relative;
-    bottom: 0;
-    width: 100%;
+  position: relative;
+  bottom: 0;
+  width: 100%;
 }
 
 .nav-link {
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-  }
-  
-  .nav-link:hover {
-    text-decoration: underline;
-  }
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
 
-.hero-image {
-    background: url('../img/shop.jpg') no-repeat center center;
-    background-size: cover;
-    height: 500px;
-    width: 100%;
-  }
+.nav-link:hover {
+  text-decoration: underline;
+}
+
+.hero-image-home {
+  background: url('../img/shop1.webp') no-repeat center center;
+  background-size: cover;
+  height: 700px;
+  width: 100%;
+}
 
 .hero-image-shop {
-  background: url('../img/shop.jpg') no-repeat center center;
+  background: url('../img/shop2.jpg') no-repeat center center;
   background-size: cover;
-  height: 400px;
+  height: 500px;
   width: 100%;
   position: relative;
+}
+
+.hero-image-shop::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  /* Black overlay with 50% opacity */
+  z-index: 1;
 }
 
 .hero-text-shop {
@@ -44,6 +56,10 @@ footer {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  z-index: 2;
+  /* Ensure text is above the overlay */
+  color: white;
+  /* Ensure text is readable */
 }
 
 .hero-text-shop h1 {
@@ -55,7 +71,8 @@ footer {
   font-size: 1.5rem;
 }
 
-#categories, #search {
+#categories,
+#search {
   margin-bottom: 20px;
 }
 

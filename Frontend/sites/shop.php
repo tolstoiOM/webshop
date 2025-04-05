@@ -17,22 +17,22 @@
 
     <div class="hero-image-shop">
         <div class="hero-text-shop text-center text-white">
-            <h1>Willkommen im Harry Potter Shop</h1>
-            <p>Finde deine Lieblingsprodukte!</p>
+            <h1>Finde deine Lieblingsprodukte!</h1>
         </div>
     </div>
 
     <div class="container mt-5">
         <div id="categories">
-        <h3>Wählen Sie eine Kategorie:</h3>
-        <select id="category-select" class="form-select mb-4">
-            <!-- Kategorien werden hier durch JavaScript geladen -->
-        </select>
+            <h3>Wählen Sie eine Kategorie:</h3>
+            <select id="category-select" class="form-select mb-4">
+                <!-- Kategorien werden hier durch JavaScript geladen -->
+            </select>
         </div>
-    
+
 
         <div id="search">
-            <input type="text" id="search-input" class="form-control" placeholder="Suche nach Produkten..." onkeyup="searchProducts()">
+            <input type="text" id="search-input" class="form-control" placeholder="Suche nach Produkten..."
+                onkeyup="searchProducts()">
         </div>
 
         <div id="products" class="row mt-4">
@@ -43,4 +43,5 @@
     <script src="../js/script.js"></script>
 
 </body>
+
 </html>

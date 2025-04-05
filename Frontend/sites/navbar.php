@@ -2,12 +2,12 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
-}?>
+} ?>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
     <div class="container">
         <!-- Logo -->
-        <a class="navbar-brand" href="../sites/index.php">
+        <a class="navbar-brand">
             <img src="../res/img/logo.png" alt="Harry Potter Shop" height="50" />
         </a>
 
@@ -16,26 +16,12 @@ if (session_status() === PHP_SESSION_NONE) {
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <!-- Navbar Links -->
-        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-            <ul class="navbar-nav mx-auto">
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="#">Houses</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="/webshop/Frontend/sites/shop.php">Shop</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="#">Gifts</a>
-                </li>
-            </ul>
-        </div>
-
         <!-- Icons and Login/Logout Button -->
         <div class="d-flex align-items-center">
-            <a href="#" class="nav-link text-dark p-2"><i class="fas fa-search"></i></a>
-            <a href="#" class="nav-link text-dark p-2"><i class="fas fa-heart"></i></a>
-            <a href="cart.php" class="nav-link text-dark p-2"><i class="fas fa-shopping-bag"> (<span id="cart-count">0</span>)</i></a>
+            <a href="/webshop/Frontend/sites/shop.php" class="nav-link text-dark p-2"><i class="fas fa-search"></i></a>
+            <a href="/webshop/Frontend/sites/index.php" class="nav-link text-dark p-2"><i class="fas fa-home"></i></a>
+            <a href="cart.php" class="nav-link text-dark p-2"><i class="fas fa-shopping-bag"> (<span
+                        id="cart-count">0</span>)</i></a>
             <a href="myprofile.php" class="nav-link text-dark p-2"><i class="fas fa-user"></i></a>
 
             <?php if (isset($_SESSION['user_id'])): ?>

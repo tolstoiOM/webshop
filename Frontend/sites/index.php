@@ -38,9 +38,11 @@ if ($result && $result->num_rows > 0) {
   <?php include '../sites/navbar.php'; ?>
 
   <!-- Hero Section -->
-  <header class="bg-primary text-white text-center py-5 hero-image">
-    <h1 class="display-4">Welcome to the Harry Potter Store</h1>
-    <p class="lead">Get all your Harry Potter merchandise here</p>
+  <header class="hero-image-home">
+    <div class="hero-text-shop text-center text-white">
+      <h1>Welcome to the Harry Potter Store</h1>
+      <p>Get all your Harry Potter merchandise here</p>
+    </div>
   </header>
 
   <!-- Product Listing -->
