@@ -4,19 +4,24 @@
 require_once '../config/config.php';
 require_once 'AuthLogic.php';
 
+header('Content-Type: application/json'); // Set the response type to JSON
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input = file_get_contents('php://input');
+    $data = json_decode($input, true);
+
+    // Validate passwords match
+    if ($data['password'] !== $data['confirmPassword']) {
+        echo json_encode(['success' => false, 'message' => 'Passwords do not match.']);
+        exit;
+    }
+
     $authLogic = new AuthLogic($pdo);
 
     // Call the registerUser method
-    $result = $authLogic->registerUser($_POST);
+    $result = $authLogic->registerUser($data);
 
-    if ($result['success']) {
-        // Redirect to login page or show success message
-        header('Location: ../../Frontend/sites/login.php?success=1');
-        exit;
-    } else {
-        // Redirect back to registration page with error message
-        header('Location: ../../Frontend/sites/registration.php?error=' . urlencode($result['message']));
-        exit;
-    }
+    // Return a JSON response
+    echo json_encode($result);
+    exit;
 }
