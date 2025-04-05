@@ -94,7 +94,7 @@
             <div id="registration-message" class="mt-3"></div>
           </div>
           <div class="card-footer text-center">
-            <a href="login.php">Already have an account? Login</a>
+            Already have an account? <a href="login.php">Login</a>
           </div>
         </div>
       </div>

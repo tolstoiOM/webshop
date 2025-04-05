@@ -12,9 +12,9 @@ $result = $conn->query($sql);
 // Überprüfen, ob Produkte vorhanden sind
 $products = [];
 if ($result && $result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $products[] = $row;
-    }
+  while ($row = $result->fetch_assoc()) {
+    $products[] = $row;
+  }
 }
 ?>
 
@@ -45,11 +45,11 @@ if ($result && $result->num_rows > 0) {
 
   <!-- Product Listing -->
   <section class="container my-5">
-        <h2 class="text-center mb-4">Our Products</h2>
-        <div id="products" class="row">
-            <!-- Produkte werden hier dynamisch geladen -->
-        </div>
-    </section>
+    <h2 class="text-center mb-4">Our Products</h2>
+    <div id="products" class="row">
+      <!-- Produkte werden hier dynamisch geladen -->
+    </div>
+  </section>
 
   <!-- Footer -->
   <footer class="bg-dark text-white text-center py-3">
