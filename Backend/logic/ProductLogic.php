@@ -44,5 +44,23 @@ if (isset($_POST['action']) && $_POST['action'] == 'addToCart') {
         $_SESSION['cart'][] = $productId;
     }
     echo json_encode(['cartCount' => count($_SESSION['cart'])]);
+
+    if (isset($_POST['action']) && $_POST['action'] === 'removeFromCart') {
+        session_start();
+        $productId = $_POST['productId'];
+    
+        // Überprüfen, ob der Warenkorb existiert
+        if (isset($_SESSION['cart']) && array_key_exists($productId, $_SESSION['cart'])) {
+            // Produkt aus dem Warenkorb entfernen
+            unset($_SESSION['cart'][$productId]);
+        }
+    
+        // Anzahl der Produkte im Warenkorb berechnen
+        $cartCount = isset($_SESSION['cart']) ? array_sum($_SESSION['cart']) : 0;
+    
+        // JSON-Antwort zurückgeben
+        echo json_encode(['success' => true, 'cartCount' => $cartCount]);
+        exit();
+    }
 }
 ?>

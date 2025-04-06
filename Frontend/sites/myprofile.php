@@ -36,6 +36,10 @@ if (!$user) {
     echo "Benutzerdaten konnten nicht geladen werden.";
     exit();
 }
+
+function maskSensitiveData($data) {
+    return '****';
+}
 ?>
 
 <!DOCTYPE html>
@@ -45,32 +49,15 @@ if (!$user) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile - Harry Potter Store</title>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Harry Potter Store</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="../res/css/style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../js/script.js" defer></script>
 </head>
 
 <body>
     <?php include '../sites/navbar.php'; ?>
-
-    <!-- Erfolgsmeldung -->
-    <?php if (isset($_GET['success']) && $_GET['success'] == 1): ?>
-        <div class="alert alert-success text-center" role="alert">
-            Ihre Daten wurden erfolgreich aktualisiert.
-        </div>
-    <?php endif; ?>
-
-    <!-- Fehlermeldung -->
-    <?php if (isset($_GET['error']) && $_GET['error'] == 1): ?>
-        <div class="alert alert-danger text-center" role="alert">
-            Es ist ein Fehler beim Speichern Ihrer Daten aufgetreten. Bitte versuchen Sie es erneut.
-        </div>
-    <?php endif; ?>
 
     <div class="container mt-5">
         <h2 class="text-center">My Profile</h2>
@@ -79,44 +66,43 @@ if (!$user) {
                 <h4>Personal Information</h4>
             </div>
             <div class="card-body">
-                <p><strong>Salutation:</strong> <?php echo htmlspecialchars($user['salutation']); ?></p>
-                <p><strong>First Name:</strong> <?php echo htmlspecialchars($user['first_name']); ?></p>
-                <p><strong>Last Name:</strong> <?php echo htmlspecialchars($user['last_name']); ?></p>
-                <p><strong>Address:</strong> <?php echo htmlspecialchars($user['address']); ?></p>
-                <p><strong>ZIP Code:</strong> <?php echo htmlspecialchars($user['zip']); ?></p>
-                <p><strong>City:</strong> <?php echo htmlspecialchars($user['city']); ?></p>
-                <p><strong>Email:</strong> <?php echo htmlspecialchars($user['email']); ?></p>
-                <p><strong>Username:</strong> <?php echo htmlspecialchars($user['username']); ?></p>
-            </div>
-            <!-- Button zum Öffnen des Passwort-Modals -->
+    <p>
+        <strong>Salutation:</strong> <?php echo htmlspecialchars($user['salutation']); ?>
+    </p>
+    <p>
+        <strong>First Name:</strong> <?php echo htmlspecialchars($user['first_name']); ?>
+    </p>
+    <p>
+        <strong>Last Name:</strong> <?php echo htmlspecialchars($user['last_name']); ?>
+    </p>
+    <p>
+        <strong>Address:</strong>
+        <span id="address-value"><?php echo maskSensitiveData($user['address']); ?></span>
+        <button type="button" class="btn btn-link toggle-visibility" data-target="address-value" data-original="<?php echo htmlspecialchars($user['address']); ?>">Anzeigen</button>
+    </p>
+    <p>
+        <strong>ZIP Code:</strong>
+        <span id="zip-value"><?php echo maskSensitiveData($user['zip']); ?></span>
+        <button type="button" class="btn btn-link toggle-visibility" data-target="zip-value" data-original="<?php echo htmlspecialchars($user['zip']); ?>">Anzeigen</button>
+    </p>
+    <p>
+        <strong>City:</strong>
+        <span id="city-value"><?php echo maskSensitiveData($user['city']); ?></span>
+        <button type="button" class="btn btn-link toggle-visibility" data-target="city-value" data-original="<?php echo htmlspecialchars($user['city']); ?>">Anzeigen</button>
+    </p>
+    <p>
+        <strong>Email:</strong>
+        <span id="email-value"><?php echo maskSensitiveData($user['email']); ?></span>
+        <button type="button" class="btn btn-link toggle-visibility" data-target="email-value" data-original="<?php echo htmlspecialchars($user['email']); ?>">Anzeigen</button>
+    </p>
+    <p>
+        <strong>Username:</strong> <?php echo htmlspecialchars($user['username']); ?>
+    </p>
+</div>
             <div class="card-footer text-center">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#passwordModal">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">
                     Daten bearbeiten
                 </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Passwortabfrage Modal -->
-    <div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="passwordModalLabel">Passwort bestätigen</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="passwordForm">
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Passwort</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
-                            <button type="button" class="btn btn-primary" id="checkPasswordButton">Bestätigen</button>
-                        </div>
-                    </form>
-                </div>
             </div>
         </div>
     </div>
@@ -130,7 +116,8 @@ if (!$user) {
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="editForm" action="/webshop/Backend/logic/updateProfile.php" method="POST">
+                    <form id="editForm">
+                        <div id="error-message" class="text-danger mb-3" style="display: none;"></div> <!-- Fehlerbereich -->
                         <div class="mb-3">
                             <label for="field" class="form-label">Feld auswählen</label>
                             <select class="form-select" id="field" name="field" required>
@@ -148,10 +135,14 @@ if (!$user) {
                             <label for="newValue" class="form-label">Neuer Wert</label>
                             <input type="text" class="form-control" id="newValue" name="newValue" required>
                         </div>
-                        <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($user_id); ?>">
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Passwort</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <input type="hidden" id="user_id" name="user_id" value="<?php echo htmlspecialchars($user_id); ?>">
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
-                            <button type="submit" class="btn btn-primary">Speichern</button>
+                            <button type="button" id="saveChanges" class="btn btn-primary">Speichern</button>
                         </div>
                     </form>
                 </div>
@@ -159,49 +150,71 @@ if (!$user) {
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.getElementById('checkPasswordButton').addEventListener('click', function () {
-            const password = document.getElementById('password').value;
+    $(document).ready(function() {
+        $('#saveChanges').click(function() {
+            console.log('Speichern-Button wurde geklickt'); // Debugging-Ausgabe
 
-            // Simulierte Passwortprüfung (Backend-Integration erforderlich)
-            if (password === "test123") { // Beispiel: Ersetzen Sie dies durch eine echte Prüfung
-                const passwordModal = bootstrap.Modal.getInstance(document.getElementById('passwordModal'));
-                passwordModal.hide(); // Passwort-Modal schließen
+            const field = $('#field').val();
+            const newValue = $('#newValue').val();
+            const userId = $('#user_id').val();
+            const password = $('#password').val();
+            const errorMessage = $('#error-message');
 
-                const editModal = new bootstrap.Modal(document.getElementById('editModal'));
-                editModal.show(); // Bearbeitungsmodal öffnen
+            // Fehlerbereich zurücksetzen
+            errorMessage.hide().text('');
+
+            if (!password.trim()) {
+                errorMessage.text('Bitte geben Sie Ihr Passwort ein.').show();
+                return;
+            }
+
+            console.log('Daten, die gesendet werden:', { field, newValue, userId, password }); // Debugging-Ausgabe
+
+            $.ajax({
+                url: '/webshop/Backend/logic/updateProfile.php',
+                method: 'POST',
+                data: {
+                    field: field,
+                    newValue: newValue,
+                    password: password,
+                    user_id: userId
+                },
+                dataType: 'json',
+                success: function(response) {
+                    console.log('Antwort vom Server:', response); // Debugging-Ausgabe
+                    if (response.success) {
+                        alert(response.message);
+                        location.reload(); // Seite neu laden, um die Änderungen anzuzeigen
+                    } else {
+                        errorMessage.text(response.message).show(); // Fehler anzeigen
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Fehler bei der AJAX-Anfrage:', error); // Debugging-Ausgabe
+                    errorMessage.text('Fehler beim Aktualisieren der Daten.').show();
+                }
+            });
+        });
+   
+
+    $('.toggle-visibility').click(function() {
+            const targetId = $(this).data('target');
+            const originalValue = $(this).data('original');
+            const targetElement = $('#' + targetId);
+
+            if ($(this).text() === 'Anzeigen') {
+                // Zeige den Originalwert an
+                targetElement.text(originalValue);
+                $(this).text('Verbergen');
             } else {
-                alert("Falsches Passwort. Bitte versuchen Sie es erneut.");
+                // Maskiere den Wert
+                targetElement.text('*'.repeat(originalValue.length));
+                $(this).text('Anzeigen');
             }
         });
-
-        document.getElementById('field').addEventListener('change', function () {
-            const field = this.value;
-            const newValueContainer = document.getElementById('newValueContainer');
-
-            // Entferne das aktuelle Eingabefeld
-            newValueContainer.innerHTML = '';
-
-            if (field === 'salutation') {
-                // Dropdown für Salutation
-                newValueContainer.innerHTML = `
-                    <label for="newValue" class="form-label">Neuer Wert</label>
-                    <select class="form-select" id="newValue" name="newValue" required>
-                        <option value="Mr.">Mr.</option>
-                        <option value="Ms.">Ms.</option>
-                        <option value="Other">Other</option>
-                    </select>
-                `;
-            } else {
-                // Standard-Textfeld für andere Felder
-                newValueContainer.innerHTML = `
-                    <label for="newValue" class="form-label">Neuer Wert</label>
-                    <input type="text" class="form-control" id="newValue" name="newValue" required>
-                `;
-            }
-        });
-    </script>
+    });
+</script>
 </body>
 
 </html>
