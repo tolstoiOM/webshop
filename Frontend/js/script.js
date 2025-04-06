@@ -13,9 +13,9 @@ $(document).ready(function () {
             success: function (data) { // Antwort ist bereits ein JSON-Objekt
                 let categories = data; // Kein JSON.parse() notwendig
                 let categorySelect = $('#category-select');
-    
+
                 categorySelect.append(`<option value="all">Alles</option>`);
-    
+
                 categories.forEach(category => {
                     categorySelect.append(`<option value="${category.id}">${category.name}</option>`);
                 });
@@ -37,7 +37,7 @@ $(document).ready(function () {
                     let products = data.products;
                     let productContainer = $('#products');
                     productContainer.empty();
-    
+
                     if (products.length > 0) {
                         products.forEach(product => {
                             productContainer.append(`
@@ -89,20 +89,41 @@ $(document).ready(function () {
     // Produkt zum Warenkorb hinzufügen
     $(document).off('click', '.add-to-cart').on('click', '.add-to-cart', function () {
         const productId = $(this).data('id');
+
+        // Check if the user is logged in
         $.ajax({
-            url: '../../Backend/logic/ProductLogic.php',
-            method: 'POST',
-            data: { action: 'addToCart', productId: productId },
-            success: function (data) { // Antwort ist bereits ein JSON-Objekt
-                if (data.success) {
-                    updateCartCount();
-                    alert('Produkt wurde dem Warenkorb hinzugefügt!');
+            url: '../../Backend/logic/session_status.php', // Check session status
+            method: 'GET',
+            dataType: 'json', // Automatically parse the response as JSON
+            success: function (sessionStatus) {
+                console.log('Parsed Response:', sessionStatus); // Log the parsed response
+
+                if (sessionStatus.loggedIn) {
+                    // User is logged in, proceed to add the product to the cart
+                    $.ajax({
+                        url: '../../Backend/logic/ProductLogic.php',
+                        method: 'POST',
+                        data: { action: 'addToCart', productId: productId },
+                        success: function (data) {
+                            if (data.success) {
+                                updateCartCount();
+                                alert('Produkt wurde dem Warenkorb hinzugefügt!');
+                            } else {
+                                console.error('Fehler in der Antwort:', data.message);
+                            }
+                        },
+                        error: function () {
+                            alert('Fehler beim Hinzufügen zum Warenkorb.');
+                        }
+                    });
                 } else {
-                    console.error('Fehler in der Antwort:', data.message);
+                    // User is not logged in, redirect to the login page
+                    alert('Bitte melden Sie sich an, um Produkte in den Warenkorb zu legen.');
+                    window.location.href = '/webshop/Frontend/sites/login.php';
                 }
             },
             error: function () {
-                alert('Fehler beim Hinzufügen zum Warenkorb.');
+                alert('Fehler beim Überprüfen des Login-Status.');
             }
         });
     });
