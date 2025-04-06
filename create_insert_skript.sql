@@ -90,3 +90,15 @@ CREATE USER 'webprojectuser'@'localhost' IDENTIFIED BY 'xSnsN)F3!wg[vbPk';
 GRANT ALL PRIVILEGES ON webshop.* TO 'webprojectuser'@'localhost';
 
 FLUSH PRIVILEGES;
+
+--Tabelle für den Warenkorb hinzufügen
+CREATE TABLE cart (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (product_id) REFERENCES products(id)
+);
