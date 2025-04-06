@@ -3,17 +3,20 @@
 session_start();
 require_once '../../Backend/config/config.php';
 
-// Warenkorb-Produkte abrufen
-$cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
+$userId = $_SESSION['user_id']; // Benutzer-ID aus der Session
 
-// Produkte aus der Datenbank abrufen
-$products = [];
-if (!empty($cart)) {
-    $placeholders = implode(',', array_fill(0, count($cart), '?'));
-    $stmt = $pdo->prepare("SELECT * FROM products WHERE id IN ($placeholders)");
+// Produkte aus dem Warenkorb abrufen
+$stmt = $pdo->prepare("
+    SELECT p.id, p.name, p.description, p.price, c.quantity
+    FROM cart c
+    JOIN products p ON c.product_id = p.id
+    WHERE c.user_id = ?
+");
+$stmt->execute([$userId]);
+$products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->execute($cart);
     $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+
 ?>
 
 <!DOCTYPE html>

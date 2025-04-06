@@ -1,66 +1,94 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+
+header('Content-Type: application/json');
+ini_set('display_errors', 0); // Fehler nicht im Browser anzeigen
+ini_set('log_errors', 1); // Fehler in eine Datei loggen
+error_reporting(E_ALL); // Alle Fehler protokollieren
+
 require_once '../config/config.php';
+
+session_start();
 
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
 
-    if ($action == 'getCategories') {
-        // Alle Kategorien abrufen
+    if ($action === 'getCategories') {
+        // Kategorien abrufen
         $stmt = $pdo->query("SELECT * FROM categories");
         echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
-    } elseif ($action == 'getProducts') {
+        exit();
+    } elseif ($action === 'getProducts') {
         // Produkte basierend auf der Kategorie abrufen
         $categoryId = $_GET['categoryId'];
 
-        if ($categoryId === 'all') {
-            // Alle Produkte abrufen, wenn "Alles" ausgewählt ist
-            $stmt = $pdo->query("SELECT * FROM products");
-            echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
-        } else {
-            // Produkte einer bestimmten Kategorie abrufen
-            $stmt = $pdo->prepare("SELECT * FROM products WHERE category_id = ?");
-            $stmt->execute([$categoryId]);
-            echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
+        try {
+        
+            if ($categoryId === 'all') {
+                $stmt = $pdo->query("SELECT id, name, description, price, CONCAT('/webshop/Backend/productpictures/', SUBSTRING_INDEX(image_path, '/', -1)) AS image_path FROM products");
+                $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            } else {
+                $stmt = $pdo->prepare("SELECT id, name, description, price, CONCAT('/webshop/Backend/productpictures/', SUBSTRING_INDEX(image_path, '/', -1)) AS image_path FROM products WHERE category_id = ?");
+                $stmt->execute([$categoryId]);
+                $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            }
+            echo json_encode(['success' => true, 'products' => $products]);
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
         }
-    } elseif ($action == 'searchProducts') {
-        // Produkte basierend auf einer Suchanfrage abrufen
-        $query = "%" . $_GET['query'] . "%";
-        $stmt = $pdo->prepare("SELECT * FROM products WHERE name LIKE ?");
-        $stmt->execute([$query]);
-        echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
-    }
-}
-
-if (isset($_POST['action']) && $_POST['action'] == 'addToCart') {
-    // Hier wird der Warenkorb in einer Session gespeichert
-    session_start();
-    if (!isset($_SESSION['cart'])) {
-        $_SESSION['cart'] = [];
-    }
-    $productId = $_POST['productId'];
-    if (!in_array($productId, $_SESSION['cart'])) {
-        $_SESSION['cart'][] = $productId;
-    }
-    echo json_encode(['cartCount' => count($_SESSION['cart'])]);
-
-    if (isset($_POST['action']) && $_POST['action'] === 'removeFromCart') {
-        session_start();
-        $productId = $_POST['productId'];
-    
-        // Überprüfen, ob der Warenkorb existiert
-        if (isset($_SESSION['cart']) && array_key_exists($productId, $_SESSION['cart'])) {
-            // Produkt aus dem Warenkorb entfernen
-            unset($_SESSION['cart'][$productId]);
-        }
-    
+        exit();
+    } elseif ($action === 'getCartCount') {
         // Anzahl der Produkte im Warenkorb berechnen
-        $cartCount = isset($_SESSION['cart']) ? array_sum($_SESSION['cart']) : 0;
-    
-        // JSON-Antwort zurückgeben
+        $userId = $_SESSION['user_id'];
+        $stmt = $pdo->prepare("SELECT SUM(quantity) AS cartCount FROM cart WHERE user_id = ?");
+        $stmt->execute([$userId]);
+        $cartCount = $stmt->fetchColumn();
+
         echo json_encode(['success' => true, 'cartCount' => $cartCount]);
         exit();
     }
 }
+
+if (isset($_POST['action'])) {
+    $action = $_POST['action'];
+
+    if ($action === 'addToCart') {
+        // Produkt zum Warenkorb hinzufügen
+        $userId = $_SESSION['user_id'];
+        $productId = $_POST['productId'];
+
+        $stmt = $pdo->prepare("SELECT quantity FROM cart WHERE user_id = ? AND product_id = ?");
+        $stmt->execute([$userId, $productId]);
+        $cartItem = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($cartItem) {
+            $stmt = $pdo->prepare("UPDATE cart SET quantity = quantity + 1 WHERE user_id = ? AND product_id = ?");
+            $stmt->execute([$userId, $productId]);
+        } else {
+            $stmt = $pdo->prepare("INSERT INTO cart (user_id, product_id, quantity) VALUES (?, ?, 1)");
+            $stmt->execute([$userId, $productId]);
+        }
+
+        $stmt = $pdo->prepare("SELECT SUM(quantity) AS cartCount FROM cart WHERE user_id = ?");
+        $stmt->execute([$userId]);
+        $cartCount = $stmt->fetchColumn();
+
+        echo json_encode(['success' => true, 'cartCount' => $cartCount]);
+        exit();
+    } elseif ($action === 'removeFromCart') {
+        // Produkt aus dem Warenkorb entfernen
+        $userId = $_SESSION['user_id'];
+        $productId = $_POST['productId'];
+
+        $stmt = $pdo->prepare("DELETE FROM cart WHERE user_id = ? AND product_id = ?");
+        $stmt->execute([$userId, $productId]);
+
+        $stmt = $pdo->prepare("SELECT SUM(quantity) AS cartCount FROM cart WHERE user_id = ?");
+        $stmt->execute([$userId]);
+        $cartCount = $stmt->fetchColumn();
+
+        echo json_encode(['success' => true, 'cartCount' => $cartCount]);
+        exit();
+    }
+}
+
 ?>
