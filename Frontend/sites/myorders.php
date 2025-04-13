@@ -87,7 +87,7 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <td><?php echo htmlspecialchars($order['status']); ?></td>
                                 <td>€<?php echo number_format($order['total_price'], 2); ?></td>
                                 <td>
-                                    <a href="/webshop/Backend/logic/generateInvoice.php?orderId=<?php echo $order['id']; ?>" class="btn btn-sm btn-secondary">Ansehen</a>
+                                    <a href="/webshop/Frontend/sites/orderDetails.php?orderId=<?php echo $order['id']; ?>" class="btn btn-sm btn-secondary">Ansehen</a>
                                 </td>
                                 <td>
                                     <a href="?deleteOrderId=<?php echo $order['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Möchten Sie diese Bestellung wirklich stornieren?');">Stornieren</a>
