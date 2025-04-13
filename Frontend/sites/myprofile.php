@@ -99,6 +99,10 @@ function maskSensitiveData($data) {
     <p>
         <strong>Username:</strong> <?php echo htmlspecialchars($user['username']); ?>
     </p>
+    <div class="card-footer text-center">
+    <a class="btn btn-primary" href="/webshop/Frontend/sites/myorders.php" class="btn btn-primary mt-3">Meine Bestellungen</a>
+    </button>
+    </div>
 </div>
             <div class="card-footer text-center">
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">
