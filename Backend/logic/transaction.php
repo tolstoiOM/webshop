@@ -63,8 +63,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $pdo->prepare("UPDATE orders SET status = 'completed' WHERE id = ?");
         $stmt->execute([$orderId]);
 
-        // Weiterleitung zur Bestellübersicht
-        echo json_encode(['success' => true, 'redirectUrl' => '/webshop/Backend/logic/generateInvoice.php?orderId=' . $orderId]);
+        // JSON-Antwort mit Weiterleitungs-URL zurückgeben
+        echo json_encode(['success' => true, 'redirectUrl' => '/webshop/Frontend/sites/orderDetails.php?orderId=' . $orderId]);
         exit();
     } catch (Exception $e) {
         error_log("Fehler: " . $e->getMessage());
