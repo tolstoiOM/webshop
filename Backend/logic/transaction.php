@@ -17,8 +17,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $userId = $_SESSION['user_id'];
     $method = $_POST['method'];
-    $cartItems = json_decode($_POST['cartItems'], true); // JSON-Daten decodieren
-    $totalAmount = $_POST['totalAmount']; // Gesamtbetrag der Bestellung
 
     require_once '../config/config.php';
 
@@ -29,6 +27,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
+        // Produkte aus der `cart`-Tabelle abrufen
+        $stmt = $pdo->prepare("SELECT c.product_id, c.quantity, p.price FROM cart c JOIN products p ON c.product_id = p.id WHERE c.user_id = ?");
+        $stmt->execute([$userId]);
+        $cartItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (empty($cartItems)) {
+            throw new Exception("Der Warenkorb ist leer.");
+        }
+
+        // Gesamtbetrag berechnen
+        $totalAmount = 0;
+        foreach ($cartItems as $item) {
+            $totalAmount += $item['price'] * $item['quantity'];
+        }
+
         // Bestellung in der Tabelle `orders` speichern
         $stmt = $pdo->prepare("INSERT INTO orders (user_id, total_price, status) VALUES (?, ?, 'pending')");
         $stmt->execute([$userId, $totalAmount]);
@@ -37,15 +50,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Produkte in der Tabelle `order_items` speichern
         $stmt = $pdo->prepare("INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)");
         foreach ($cartItems as $item) {
-            // Debugging: Überprüfen der Produktdaten
-            error_log("Produkt-ID: " . $item['product_id']);
-            error_log("Menge: " . $item['quantity']);
-            error_log("Preis: " . $item['price']);
-
             if (!$stmt->execute([$orderId, $item['product_id'], $item['quantity'], $item['price']])) {
                 error_log("Fehler beim Einfügen in order_items: " . print_r($stmt->errorInfo(), true));
             }
         }
+
+        // Produkte aus der `cart`-Tabelle löschen
+        $stmt = $pdo->prepare("DELETE FROM cart WHERE user_id = ?");
+        $stmt->execute([$userId]);
 
         // Status der Bestellung auf "completed" setzen
         $stmt = $pdo->prepare("UPDATE orders SET status = 'completed' WHERE id = ?");
