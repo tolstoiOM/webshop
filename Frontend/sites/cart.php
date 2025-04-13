@@ -1,22 +1,29 @@
 <!-- filepath: /Applications/XAMPP/xamppfiles/htdocs/webshop/Frontend/sites/cart.php -->
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 session_start();
+
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit();
+}
+
 require_once '../../Backend/config/config.php';
 
-$userId = $_SESSION['user_id']; // Benutzer-ID aus der Session
+$userId = $_SESSION['user_id'];
 
-// Produkte aus dem Warenkorb abrufen
-$stmt = $pdo->prepare("
-    SELECT p.id, p.name, p.description, p.price, c.quantity
-    FROM cart c
-    JOIN products p ON c.product_id = p.id
-    WHERE c.user_id = ?
-");
+// Warenkorb-Daten abrufen
+$stmt = $pdo->prepare("SELECT c.product_id, c.quantity, p.name, p.price, p.image_path FROM cart c JOIN products p ON c.product_id = p.id WHERE c.user_id = ?");
 $stmt->execute([$userId]);
-$products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $stmt->execute($cart);
-    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$cartItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// Gesamtpreis berechnen
+$totalPrice = 0;
+foreach ($cartItems as $item) {
+    $totalPrice += $item['price'] * $item['quantity'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -30,59 +37,58 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../js/script.js"></script>
-</head>
+    <script src="../js/script.js"></script></head>
 <body>
-
     <?php include '../sites/navbar.php'; ?>
     <div class="container mt-5">
-        <h2 class="text-center">Ihr Warenkorb</h2>
-        <div class="mt-4">
-            <?php if (!empty($products)): ?>
-                <ul class="list-group">
-                    <?php foreach ($products as $product): ?>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <h5><?php echo htmlspecialchars($product['name']); ?></h5>
-                                <p><?php echo htmlspecialchars($product['description']); ?></p>
-                                <p><strong>Preis:</strong> €<?php echo htmlspecialchars($product['price']); ?></p>
-                            </div>
-                            <button class="btn btn-danger remove-from-cart" data-id="<?php echo $product['id']; ?>">Entfernen</button>
-                        </li>
+        <h2 class="text-center">Warenkorb</h2>
+
+        <?php if (empty($cartItems)): ?>
+            <div class="alert alert-warning text-center">Ihr Warenkorb ist leer.</div>
+        <?php else: ?>
+            <table class="table table-bordered mt-4">
+                <thead>
+                    <tr>
+                        <th>Produkt</th>
+                        <th>Menge</th>
+                        <th>Preis</th>
+                        <th>Gesamt</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($cartItems as $item): ?>
+                        <?php
+                        // Pfad bereinigen und sicherstellen, dass ein führender Slash vorhanden ist
+                        $imagePath = '/' . ltrim($item['image_path'], '/');
+                        ?>
+                        <tr>
+                            <td>
+                                <img src="/webshop<?= $imagePath ?>" alt="<?= $item['name'] ?>" style="width: 50px; height: 50px;">
+                                <?= $item['name'] ?>
+                            </td>
+                            <td>x<?= $item['quantity'] ?></td>
+                            <td>€<?= number_format($item['price'], 2) ?></td>
+                            <td>€<?= number_format($item['price'] * $item['quantity'], 2) ?></td>
+                        </tr>
                     <?php endforeach; ?>
-                </ul>
-                <div class="mt-4 text-end">
-                    <button class="btn btn-primary" id="proceed-to-payment">Weiter zur Zahlung</button>
-                </div>
-            <?php else: ?>
-                <p class="text-center">Ihr Warenkorb ist leer.</p>
-            <?php endif; ?>
+                </tbody>
+            </table>
+
+            <div class="text-end mt-4">
+                <h4>Gesamtpreis: <strong>€<?= number_format($totalPrice, 2) ?></strong></h4>
+            </div>
+
+            <!-- Weiter zur Zahlung Button -->
+            <div class="text-center mt-4">
+                <a href="/webshop/Frontend/sites/payment.php" class="btn btn-success">Weiter zur Zahlung</a>
+            </div>
+        <?php endif; ?>
+
+        <div class="text-center mt-4">
+            <a href="/webshop/Frontend/sites/index.php" class="btn btn-primary">Weiter einkaufen</a>
         </div>
     </div>
 
-    <script>
-        $(document).ready(function () {
-            // Produkt aus dem Warenkorb entfernen
-            $('.remove-from-cart').click(function () {
-                const productId = $(this).data('id');
-                $.ajax({
-                    url: '../../Backend/logic/ProductLogic.php',
-                    method: 'POST',
-                    data: { action: 'removeFromCart', productId: productId },
-                    success: function (response) {
-                        location.reload(); // Seite neu laden, um die Änderungen anzuzeigen
-                    },
-                    error: function () {
-                        alert('Fehler beim Entfernen des Produkts.');
-                    }
-                });
-            });
-
-            // Weiter zur Zahlung
-            $('#proceed-to-payment').click(function () {
-                window.location.href = 'payment.php'; // Weiterleitung zur Zahlungsseite
-            });
-        });
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
