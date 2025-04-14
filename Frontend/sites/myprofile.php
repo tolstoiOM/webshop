@@ -61,43 +61,43 @@
     <?php include '../sites/navbar.php'; ?>
 
     <div class="container mt-5">
-        <h2 class="text-center">My Profile</h2>
+        <h2 class="text-center">Mein Konto</h2>
         <div class="card mt-4">
             <div class="card-header">
-                <h4>Personal Information</h4>
+                <h4>Persönliche Daten</h4>
             </div>
             <div class="card-body">
     <p>
-        <strong>Salutation:</strong> <?php echo htmlspecialchars($user['salutation']); ?>
+        <strong>Anrede:</strong> <?php echo htmlspecialchars($user['salutation']); ?>
     </p>
     <p>
-        <strong>First Name:</strong> <?php echo htmlspecialchars($user['first_name']); ?>
+        <strong>Vorname:</strong> <?php echo htmlspecialchars($user['first_name']); ?>
     </p>
     <p>
-        <strong>Last Name:</strong> <?php echo htmlspecialchars($user['last_name']); ?>
+        <strong>Nachname:</strong> <?php echo htmlspecialchars($user['last_name']); ?>
     </p>
     <p>
-        <strong>Address:</strong>
+        <strong>Adresse:</strong>
         <span id="address-value"><?php echo maskSensitiveData($user['address']); ?></span>
         <button type="button" class="btn btn-link toggle-visibility" data-target="address-value" data-original="<?php echo htmlspecialchars($user['address']); ?>">Anzeigen</button>
     </p>
     <p>
-        <strong>ZIP Code:</strong>
+        <strong>PLZ:</strong>
         <span id="zip-value"><?php echo maskSensitiveData($user['zip']); ?></span>
         <button type="button" class="btn btn-link toggle-visibility" data-target="zip-value" data-original="<?php echo htmlspecialchars($user['zip']); ?>">Anzeigen</button>
     </p>
     <p>
-        <strong>City:</strong>
+        <strong>Stadt:</strong>
         <span id="city-value"><?php echo maskSensitiveData($user['city']); ?></span>
         <button type="button" class="btn btn-link toggle-visibility" data-target="city-value" data-original="<?php echo htmlspecialchars($user['city']); ?>">Anzeigen</button>
     </p>
     <p>
-        <strong>Email:</strong>
+        <strong>E-Mail:</strong>
         <span id="email-value"><?php echo maskSensitiveData($user['email']); ?></span>
         <button type="button" class="btn btn-link toggle-visibility" data-target="email-value" data-original="<?php echo htmlspecialchars($user['email']); ?>">Anzeigen</button>
     </p>
     <p>
-        <strong>Username:</strong> <?php echo htmlspecialchars($user['username']); ?>
+        <strong>Benutzername:</strong> <?php echo htmlspecialchars($user['username']); ?>
     </p>
     <div class="card-footer text-center">
     <a class="btn btn-primary" href="/Frontend/sites/myorders.php" class="btn btn-primary mt-3">Meine Bestellungen</a>
@@ -126,14 +126,14 @@
                         <div class="mb-3">
                             <label for="field" class="form-label">Feld auswählen</label>
                             <select class="form-select" id="field" name="field" required>
-                                <option value="first_name">First Name</option>
-                                <option value="last_name">Last Name</option>
-                                <option value="address">Address</option>
-                                <option value="zip">ZIP Code</option>
-                                <option value="city">City</option>
-                                <option value="email">Email</option>
-                                <option value="username">Username</option>
-                                <option value="salutation">Salutation</option>
+                                <option value="first_name">Vorname</option>
+                                <option value="last_name">Nachname</option>
+                                <option value="address">Adresse</option>
+                                <option value="zip">PLZ</option>
+                                <option value="city">Stadt</option>
+                                <option value="email">E-Mail</option>
+                                <option value="username">Benutzername</option>
+                                <option value="salutation">Anrede</option>
                             </select>
                         </div>
                         <div class="mb-3" id="newValueContainer">

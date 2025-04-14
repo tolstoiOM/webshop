@@ -24,7 +24,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Harry Potter Store</title>
+  <title>Harry Potter Shop</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
   <link rel="stylesheet" href="Frontend/res/css/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -40,14 +40,14 @@
   <!-- Hero Section -->
   <header class="hero-image-home">
     <div class="hero-text-shop text-center text-white">
-      <h1>Welcome to the Harry Potter Store</h1>
-      <p>Get all your Harry Potter merchandise here</p>
+      <h1>Willkommen im Harry Potter Shop</h1>
+      <p>Hier finden Sie alle Ihre Harry-Potter-Fanartikel!</p>
     </div>
   </header>
 
   <!-- Product Listing -->
   <section class="container my-5">
-    <h2 class="text-center mb-4">Our Products</h2>
+    <h2 class="text-center mb-4">Unsere Produkte</h2>
     <div id="products" class="row">
       <!-- Produkte werden hier dynamisch geladen -->
     </div>
@@ -56,7 +56,7 @@
   <!-- Footer -->
   <footer class="bg-dark text-white text-center py-3">
     <p>
-      © 2025 My Webshop |
+      © 2025 Harry Potter Shop |
       <a href="privacy.php" class="text-white">Privacy Policy</a>
     </p>
   </footer>

@@ -24,16 +24,16 @@
                     <div class="card-body">
                         <form id="login-form">
                             <div class="mb-3">
-                                <label for="email" class="form-label">Email address</label>
+                                <label for="email" class="form-label">E-Mail-Addresse</label>
                                 <input type="email" class="form-control" id="email" name="email" required>
                             </div>
                             <div class="mb-3">
-                                <label for="password" class="form-label">Password</label>
+                                <label for="password" class="form-label">Passwort</label>
                                 <input type="password" class="form-control" id="password" name="password" required>
                             </div>
                             <div class="mb-3 form-check">
                                 <input type="checkbox" class="form-check-input" id="remember-login">
-                                <label class="form-check-label" for="remember-login">Remember Login</label>
+                                <label class="form-check-label" for="remember-login">Login merken</label>
                             </div>
                             <div class="d-grid">
                                 <button type="submit" class="btn btn-primary">Login</button>
@@ -42,7 +42,7 @@
                         <div id="login-message" class="mt-3"></div>
                     </div>
                     <div class="card-footer text-center">
-                        <p>Don't have an account? <a href="registration.php">Register here</a></p>
+                        <p>Noch kein Konto? <a href="registration.php">Hier registrieren</a></p>
                     </div>
                 </div>
             </div>

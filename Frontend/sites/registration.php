@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Registration - Harry Potter Store</title>
+  <title>Registrierung - Harry Potter Shop</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
   <link rel="stylesheet" href="../res/css/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -23,78 +23,78 @@
             <form id="registration-form">
               <!-- Salutation -->
               <div class="mb-3">
-                <label for="salutation" class="form-label">Salutation</label>
+                <label for="salutation" class="form-label">Anrede</label>
                 <select class="form-select" id="salutation" name="salutation" required>
-                  <option value="">Please select...</option>
-                  <option value="Mr.">Mr.</option>
-                  <option value="Ms.">Ms.</option>
-                  <option value="Other">Other</option>
+                  <option value="">Bitte auswählen...</option>
+                  <option value="Mr.">Herr</option>
+                  <option value="Ms.">Frau</option>
+                  <option value="Other">Divers</option>
                 </select>
               </div>
 
               <!-- First Name -->
               <div class="mb-3">
-                <label for="firstName" class="form-label">First Name</label>
+                <label for="firstName" class="form-label">Vorname</label>
                 <input type="text" class="form-control" id="firstName" name="firstName" required>
               </div>
 
               <!-- Last Name -->
               <div class="mb-3">
-                <label for="lastName" class="form-label">Last Name</label>
+                <label for="lastName" class="form-label">Nachname</label>
                 <input type="text" class="form-control" id="lastName" name="lastName" required>
               </div>
 
               <!-- Address -->
               <div class="mb-3">
-                <label for="address" class="form-label">Address</label>
+                <label for="address" class="form-label">Adresse</label>
                 <input type="text" class="form-control" id="address" name="address" required>
               </div>
 
               <!-- ZIP Code -->
               <div class="mb-3">
-                <label for="zip" class="form-label">ZIP Code</label>
+                <label for="zip" class="form-label">PLZ</label>
                 <input type="text" class="form-control" id="zip" name="zip" required>
               </div>
 
               <!-- City -->
               <div class="mb-3">
-                <label for="city" class="form-label">City</label>
+                <label for="city" class="form-label">Stadt</label>
                 <input type="text" class="form-control" id="city" name="city" required>
               </div>
 
               <!-- Email -->
               <div class="mb-3">
-                <label for="email" class="form-label">Email Address</label>
+                <label for="email" class="form-label">E-Mail-Adresse</label>
                 <input type="email" class="form-control" id="email" name="email" required>
               </div>
 
               <!-- Username -->
               <div class="mb-3">
-                <label for="username" class="form-label">Username</label>
+                <label for="username" class="form-label">Benutzername</label>
                 <input type="text" class="form-control" id="username" name="username" required>
               </div>
 
               <!-- Password -->
               <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
+                <label for="password" class="form-label">Passwort</label>
                 <input type="password" class="form-control" id="password" name="password" required>
               </div>
 
               <!-- Confirm Password -->
               <div class="mb-3">
-                <label for="confirmPassword" class="form-label">Confirm Password</label>
+                <label for="confirmPassword" class="form-label">Passwort bestätigen</label>
                 <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
               </div>
 
               <!-- Submit Button -->
               <div class="d-grid">
-                <button type="submit" class="btn btn-primary">Register</button>
+                <button type="submit" class="btn btn-primary">Registrieren</button>
               </div>
             </form>
             <div id="registration-message" class="mt-3"></div>
           </div>
           <div class="card-footer text-center">
-            Already have an account? <a href="login.php">Login</a>
+            Sie sind schon registriert? <a href="login.php">Login</a>
           </div>
         </div>
       </div>
