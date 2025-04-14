@@ -68,7 +68,7 @@
                     const password = document.getElementById('password').value;
                     const rememberLogin = document.getElementById('remember-login').checked;
 
-                    fetch('/webshop/Backend/logic/login_process.php', {
+                    fetch('/Backend/logic/login_process.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -92,7 +92,7 @@
                                 }
 
                                 messageDiv.innerHTML = `<div class="alert alert-success">${data.message}</div>`;
-                                window.location.href = '/webshop/Frontend/sites/index.php';
+                                window.location.href = '/index.php';
                             } else {
                                 // Clear the form on failed login
                                 document.getElementById('email').value = '';

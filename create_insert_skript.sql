@@ -1,5 +1,5 @@
 -- Datenbank erstellen
-CREATE DATABASE webshop;
+CREATE DATABASE IF NOT EXISTS webshop;
 
 -- Zur erstellten Datenbank wechseln
 USE webshop;
@@ -49,6 +49,30 @@ CREATE TABLE orders (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+-- Tabelle 'order_items' erstellen
+CREATE TABLE order_items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);
+
+-- Tabelle 'cart' erstellen
+CREATE TABLE cart (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);
+
 -- Kategorien einfügen
 INSERT INTO categories (name) VALUES
 ('Bücher'),
@@ -69,13 +93,13 @@ VALUES
 
 -- Beispiel-Produkte hinzufügen
 INSERT INTO products (name, description, price, rating, image_path, category_id) VALUES
-('Harry Potter und der Stein der Weisen', 'Das erste Buch der Harry Potter Reihe', 19.99, 4.8, '../res/img/1.jpg', 1),
-('Harry Potter Zauberstab', 'Originalgetreuer Zauberstab von Harry Potter', 29.99, 4.7, '../res/img/2.jpg', 2),
+('Harry Potter und der Stein der Weisen', 'Das erste Buch der Harry Potter Reihe', 19.99, 4.8, '1.jpg', 1),
+('Harry Potter Zauberstab', 'Originalgetreuer Zauberstab von Harry Potter', 29.99, 4.7, '2.jpg', 2),
 ('Slytherin Hoodie', 'Hoodie mit dem Slytherin-Logo', 39.99, 4.6, '../res/img/3.jpg', 3),
-('Hermine Granger Funko Pop', 'Sammlerfigur von Hermine Granger', 15.99, 4.9, '../res/img/4.jpg', 4),
-('Hogwarts Uhr', 'Wand-Uhr im Hogwarts-Stil', 49.99, 4.5, '../res/img/5.jpg', 5),
-('Dumbledore Ring', 'Ring von Albus Dumbledore', 99.99, 4.8, '../res/img/6.jpg', 6),
-('Hogwarts Geschenkbox', 'Geschenkbox mit verschiedenen Harry Potter Souvenirs', 59.99, 4.7, '../res/img/7.jpg', 7);
+('Hermine Granger Funko Pop', 'Sammlerfigur von Hermine Granger', 15.99, 4.9, '4.jpg', 4),
+('Hogwarts Uhr', 'Wand-Uhr im Hogwarts-Stil', 49.99, 4.5, '5.jpg', 5),
+('Dumbledore Ring', 'Ring von Albus Dumbledore', 99.99, 4.8, '6.jpg', 6),
+('Hogwarts Geschenkbox', 'Geschenkbox mit verschiedenen Harry Potter Souvenirs', 59.99, 4.7, '7.jpg', 7);
 
 
 -- Beispiel-Bestellung hinzufügen
@@ -90,15 +114,3 @@ CREATE USER 'webprojectuser'@'localhost' IDENTIFIED BY 'xSnsN)F3!wg[vbPk';
 GRANT ALL PRIVILEGES ON webshop.* TO 'webprojectuser'@'localhost';
 
 FLUSH PRIVILEGES;
-
---Tabelle für den Warenkorb hinzufügen
-CREATE TABLE cart (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    product_id INT NOT NULL,
-    quantity INT NOT NULL DEFAULT 1,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (product_id) REFERENCES products(id)
-);

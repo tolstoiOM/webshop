@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: webshop-web
+    ports:
+      - "8080:80"  # damit kein Konflikt mit XAMPP auf Port 80
+    volumes:
+      - .:/var/www/html  # mountet aktuellen Code direkt
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+
+  db:
+    image: mysql:8.0
+    container_name: webshop-db
+    ports:
+      - "3307:3306"  # damit kein Konflikt mit XAMPP auf Port 3306
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: webshop
+      MYSQL_USER: webprojectuser
+      MYSQL_PASSWORD: xSnsN)F3!wg[vbPk
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./create_insert_skript.sql:/docker-entrypoint-initdb.d/create_insert_skript.sql
+
+volumes:
+  db-data:

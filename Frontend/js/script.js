@@ -119,7 +119,7 @@ $(document).ready(function () {
                 } else {
                     // User is not logged in, redirect to the login page
                     alert('Bitte melden Sie sich an, um Produkte in den Warenkorb zu legen.');
-                    window.location.href = '/webshop/Frontend/sites/login.php';
+                    window.location.href = '/Frontend/sites/login.php';
                 }
             },
             error: function () {

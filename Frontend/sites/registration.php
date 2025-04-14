@@ -115,7 +115,7 @@
         return;
       }
 
-      fetch('/webshop/Backend/logic/register_process.php', {
+      fetch('/Backend/logic/register_process.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -128,7 +128,7 @@
           if (result.success) {
             messageDiv.innerHTML = `<div class="alert alert-success">${result.message}</div>`;
             setTimeout(() => {
-              window.location.href = '/webshop/Frontend/sites/login.php';
+              window.location.href = '/Frontend/sites/login.php';
             }, 2000); // Redirect after 2 seconds
           } else {
             messageDiv.innerHTML = `<div class="alert alert-danger">${result.message}</div>`;

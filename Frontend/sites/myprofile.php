@@ -1,45 +1,45 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
-    exit();
-}
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: login.php');
+        exit();
+    }
 
-// Verbindung zur Datenbank einbinden
-require_once '../../Backend/config/config.php';
+    // Verbindung zur Datenbank einbinden
+    require_once '../../Backend/config/config.php';
 
-// Prüfen, ob die Verbindung existiert
-if (!isset($conn)) {
-    die("Database connection not established.");
-}
+    // Prüfen, ob die Verbindung existiert
+    if (!isset($conn)) {
+        die("Database connection not established.");
+    }
 
-$user_id = $_SESSION['user_id'];
+    $user_id = $_SESSION['user_id'];
 
-// Benutzerdaten aus der Datenbank abrufen
-$sql = "SELECT salutation, first_name, last_name, address, zip, city, email, username FROM users WHERE id = ?";
-$stmt = $conn->prepare($sql);
-if (!$stmt) {
-    die("Prepare failed: " . $conn->error);
-}
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
-$user = $result->fetch_assoc();
+    // Benutzerdaten aus der Datenbank abrufen
+    $sql = "SELECT salutation, first_name, last_name, address, zip, city, email, username FROM users WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        die("Prepare failed: " . $conn->error);
+    }
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user = $result->fetch_assoc();
 
-if (!$user) {
-    echo "Benutzerdaten konnten nicht geladen werden.";
-    exit();
-}
+    if (!$user) {
+        echo "Benutzerdaten konnten nicht geladen werden.";
+        exit();
+    }
 
-function maskSensitiveData($data) {
-    return '****';
-}
+    function maskSensitiveData($data) {
+        return '****';
+    }
 ?>
 
 <!DOCTYPE html>
@@ -100,7 +100,7 @@ function maskSensitiveData($data) {
         <strong>Username:</strong> <?php echo htmlspecialchars($user['username']); ?>
     </p>
     <div class="card-footer text-center">
-    <a class="btn btn-primary" href="/webshop/Frontend/sites/myorders.php" class="btn btn-primary mt-3">Meine Bestellungen</a>
+    <a class="btn btn-primary" href="/Frontend/sites/myorders.php" class="btn btn-primary mt-3">Meine Bestellungen</a>
     </button>
     </div>
 </div>
@@ -177,7 +177,7 @@ function maskSensitiveData($data) {
             console.log('Daten, die gesendet werden:', { field, newValue, userId, password }); // Debugging-Ausgabe
 
             $.ajax({
-                url: '/webshop/Backend/logic/updateProfile.php',
+                url: '/Backend/logic/updateProfile.php',
                 method: 'POST',
                 data: {
                     field: field,

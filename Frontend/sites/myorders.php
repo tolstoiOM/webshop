@@ -1,43 +1,43 @@
 <?php
-// filepath: /Applications/XAMPP/xamppfiles/htdocs/webshop/Frontend/sites/myorders.php
+    // filepath: /Applications/XAMPP/xamppfiles/htdocs/webshop/Frontend/sites/myorders.php
 
-session_start();
-if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
-    exit();
-}
-
-require_once '../../Backend/config/config.php';
-
-$userId = $_SESSION['user_id'];
-
-// Bestellung löschen, falls `deleteOrderId` übergeben wurde
-if (isset($_GET['deleteOrderId'])) {
-    $deleteOrderId = $_GET['deleteOrderId'];
-
-    // Überprüfen, ob die Bestellung dem Benutzer gehört
-    $stmt = $pdo->prepare("SELECT id FROM orders WHERE id = ? AND user_id = ?");
-    $stmt->execute([$deleteOrderId, $userId]);
-    $order = $stmt->fetch();
-
-    if ($order) {
-        // Bestellung und zugehörige Produkte löschen
-        $stmt = $pdo->prepare("DELETE FROM order_items WHERE order_id = ?");
-        $stmt->execute([$deleteOrderId]);
-
-        $stmt = $pdo->prepare("DELETE FROM orders WHERE id = ?");
-        $stmt->execute([$deleteOrderId]);
-
-        $message = "Die Bestellung wurde erfolgreich storniert.";
-    } else {
-        $message = "Die Bestellung konnte nicht gefunden werden oder gehört nicht Ihnen.";
+    session_start();
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: login.php');
+        exit();
     }
-}
 
-// Bestellungen des Benutzers abrufen
-$stmt = $pdo->prepare("SELECT id, total_price, status, created_at FROM orders WHERE user_id = ? ORDER BY created_at DESC");
-$stmt->execute([$userId]);
-$orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    require_once '../../Backend/config/config.php';
+
+    $userId = $_SESSION['user_id'];
+
+    // Bestellung löschen, falls `deleteOrderId` übergeben wurde
+    if (isset($_GET['deleteOrderId'])) {
+        $deleteOrderId = $_GET['deleteOrderId'];
+
+        // Überprüfen, ob die Bestellung dem Benutzer gehört
+        $stmt = $pdo->prepare("SELECT id FROM orders WHERE id = ? AND user_id = ?");
+        $stmt->execute([$deleteOrderId, $userId]);
+        $order = $stmt->fetch();
+
+        if ($order) {
+            // Bestellung und zugehörige Produkte löschen
+            $stmt = $pdo->prepare("DELETE FROM order_items WHERE order_id = ?");
+            $stmt->execute([$deleteOrderId]);
+
+            $stmt = $pdo->prepare("DELETE FROM orders WHERE id = ?");
+            $stmt->execute([$deleteOrderId]);
+
+            $message = "Die Bestellung wurde erfolgreich storniert.";
+        } else {
+            $message = "Die Bestellung konnte nicht gefunden werden oder gehört nicht Ihnen.";
+        }
+    }
+
+    // Bestellungen des Benutzers abrufen
+    $stmt = $pdo->prepare("SELECT id, total_price, status, created_at FROM orders WHERE user_id = ? ORDER BY created_at DESC");
+    $stmt->execute([$userId]);
+    $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -87,7 +87,7 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <td><?php echo htmlspecialchars($order['status']); ?></td>
                                 <td>€<?php echo number_format($order['total_price'], 2); ?></td>
                                 <td>
-                                    <a href="/webshop/Frontend/sites/orderDetails.php?orderId=<?php echo $order['id']; ?>" class="btn btn-sm btn-secondary">Ansehen</a>
+                                    <a href="/Frontend/sites/orderDetails.php?orderId=<?php echo $order['id']; ?>" class="btn btn-sm btn-secondary">Ansehen</a>
                                 </td>
                                 <td>
                                     <a href="?deleteOrderId=<?php echo $order['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Möchten Sie diese Bestellung wirklich stornieren?');">Stornieren</a>

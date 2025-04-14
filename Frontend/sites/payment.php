@@ -1,4 +1,3 @@
-<!-- filepath: /Applications/XAMPP/xamppfiles/htdocs/webshop/Frontend/sites/payment.php -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -75,7 +74,7 @@
         const totalAmount = 37.47; // Beispiel: Gesamtbetrag (dynamisch berechnen)
 
         $.ajax({
-            url: '/webshop/Backend/logic/transaction.php',
+            url: '/Backend/logic/transaction.php',
             method: 'POST',
             data: {
                 method,

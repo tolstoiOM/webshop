@@ -1,29 +1,28 @@
-<!-- filepath: /Applications/XAMPP/xamppfiles/htdocs/webshop/Frontend/sites/cart.php -->
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-session_start();
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+    session_start();
 
-if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
-    exit();
-}
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: login.php');
+        exit();
+    }
 
-require_once '../../Backend/config/config.php';
+    require_once '../../Backend/config/config.php';
 
-$userId = $_SESSION['user_id'];
+    $userId = $_SESSION['user_id'];
 
-// Warenkorb-Daten abrufen
-$stmt = $pdo->prepare("SELECT c.product_id, c.quantity, p.name, p.price, p.image_path FROM cart c JOIN products p ON c.product_id = p.id WHERE c.user_id = ?");
-$stmt->execute([$userId]);
-$cartItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // Warenkorb-Daten abrufen
+    $stmt = $pdo->prepare("SELECT c.product_id, c.quantity, p.name, p.price, p.image_path FROM cart c JOIN products p ON c.product_id = p.id WHERE c.user_id = ?");
+    $stmt->execute([$userId]);
+    $cartItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Gesamtpreis berechnen
-$totalPrice = 0;
-foreach ($cartItems as $item) {
-    $totalPrice += $item['price'] * $item['quantity'];
-}
+    // Gesamtpreis berechnen
+    $totalPrice = 0;
+    foreach ($cartItems as $item) {
+        $totalPrice += $item['price'] * $item['quantity'];
+    }
 ?>
 
 <!DOCTYPE html>
@@ -63,7 +62,7 @@ foreach ($cartItems as $item) {
                         ?>
                         <tr>
                             <td>
-                                <img src="/webshop<?= $imagePath ?>" alt="<?= $item['name'] ?>" style="width: 50px; height: 50px;">
+                                <img src="/Backend\productpictures<?= $imagePath ?>" alt="<?= $item['name'] ?>" style="width: 50px; height: 50px;">
                                 <?= $item['name'] ?>
                             </td>
                             <td>x<?= $item['quantity'] ?></td>
@@ -80,12 +79,12 @@ foreach ($cartItems as $item) {
 
             <!-- Weiter zur Zahlung Button -->
             <div class="text-center mt-4">
-                <a href="/webshop/Frontend/sites/payment.php" class="btn btn-success">Weiter zur Zahlung</a>
+                <a href="/Frontend/sites/payment.php" class="btn btn-success">Weiter zur Zahlung</a>
             </div>
         <?php endif; ?>
 
         <div class="text-center mt-4">
-            <a href="/webshop/Frontend/sites/index.php" class="btn btn-primary">Weiter einkaufen</a>
+            <a href="/index.php" class="btn btn-primary">Weiter einkaufen</a>
         </div>
     </div>
 
