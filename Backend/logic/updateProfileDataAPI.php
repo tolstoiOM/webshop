@@ -1,28 +1,28 @@
 <?php
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL);
-    session_start();
+    require_once '../../Backend/config/session.php';
     require_once '../config/config.php';
-
     header('Content-Type: application/json'); // JSON-Antwort
 
-    // Debugging: Überprüfen Sie, ob die Datei korrekt aufgerufen wird
-    error_log('updateProfile.php wurde aufgerufen');
+    // JSON-Daten aus der Anfrage lesen
+    $input = file_get_contents('php://input');
+    $data = json_decode($input, true);
 
-    // Überprüfen Sie, ob alle erforderlichen POST-Daten vorhanden sind
-    if (!isset($_POST['field'], $_POST['newValue'], $_POST['password'], $_POST['user_id'])) {
+    // Debugging: Überprüfen Sie die empfangenen Daten
+    error_log('Empfangene JSON-Daten: ' . print_r($data, true));
+
+    // Überprüfen Sie, ob alle erforderlichen Daten vorhanden sind
+    if (!isset($data['field'], $data['newValue'], $data['password'], $data['user_id'])) {
         echo json_encode(['success' => false, 'message' => 'Ungültige Anfrage.']);
         exit();
     }
 
-    $field = $_POST['field'];
-    $newValue = $_POST['newValue'];
-    $password = $_POST['password'];
-    $user_id = $_POST['user_id'];
+    $field = $data['field'];
+    $newValue = $data['newValue'];
+    $password = $data['password'];
+    $user_id = $data['user_id'];
 
-    // Debugging: POST-Daten prüfen
-    error_log('POST-Daten: ' . print_r($_POST, true));
+    // Debugging: Überprüfen Sie die extrahierten Daten
+    error_log('Extrahierte Daten: ' . print_r(compact('field', 'newValue', 'password', 'user_id'), true));
 
     // Sicherheitsmaßnahmen: Nur erlaubte Felder aktualisieren
     $allowed_fields = ['salutation', 'first_name', 'last_name', 'address', 'zip', 'city', 'email', 'username'];

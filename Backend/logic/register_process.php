@@ -1,9 +1,7 @@
 <?php
-    // filepath: c:\xampp\htdocs\webshop\Backend\logic\register_process.php
-
+    require_once '../../Backend/config/session.php';
     require_once '../config/config.php';
     require_once 'AuthLogic.php';
-
     header('Content-Type: application/json'); // Set the response type to JSON
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {

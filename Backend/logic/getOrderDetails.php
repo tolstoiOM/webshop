@@ -1,8 +1,6 @@
 <?php
-    // filepath: /Applications/XAMPP/xamppfiles/htdocs/webshop/Backend/api/getOrderDetails.php
-
+    require_once '../../Backend/config/session.php';
     header('Content-Type: application/json');
-
     require_once '../config/config.php';
 
     if (!isset($_GET['orderId'])) {

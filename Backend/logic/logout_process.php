@@ -1,7 +1,5 @@
 <?php
-    // filepath: c:\xampp\htdocs\webshop\Backend\logic\logout_process.php
-
-    session_start(); // Start the session
+    require_once '../../Backend/config/session.php'; // Start the session
     session_unset(); // Unset all session variables
     session_destroy(); // Destroy the session
 

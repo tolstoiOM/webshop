@@ -1,12 +1,7 @@
 <?php
+    require_once '../../Backend/config/session.php';
     header('Content-Type: application/json');
-    ini_set('display_errors', 0); // Fehler nicht im Browser anzeigen
-    ini_set('log_errors', 1); // Fehler in eine Datei loggen
-    error_reporting(E_ALL); // Alle Fehler protokollieren
-
     require_once '../config/config.php';
-
-    session_start();
 
     if (isset($_GET['action'])) {
         $action = $_GET['action'];

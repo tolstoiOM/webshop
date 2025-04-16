@@ -1,44 +1,8 @@
 <?php
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL);
-
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
+    require_once '../../Backend/config/session.php';
     if (!isset($_SESSION['user_id'])) {
         header('Location: login.php');
         exit();
-    }
-
-    // Verbindung zur Datenbank einbinden
-    require_once '../../Backend/config/config.php';
-
-    // Prüfen, ob die Verbindung existiert
-    if (!isset($conn)) {
-        die("Database connection not established.");
-    }
-
-    $user_id = $_SESSION['user_id'];
-
-    // Benutzerdaten aus der Datenbank abrufen
-    $sql = "SELECT salutation, first_name, last_name, address, zip, city, email, username FROM users WHERE id = ?";
-    $stmt = $conn->prepare($sql);
-    if (!$stmt) {
-        die("Prepare failed: " . $conn->error);
-    }
-    $stmt->bind_param("i", $user_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $user = $result->fetch_assoc();
-
-    if (!$user) {
-        echo "Benutzerdaten konnten nicht geladen werden.";
-        exit();
-    }
-
-    function maskSensitiveData($data) {
-        return '****';
     }
 ?>
 
@@ -54,7 +18,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../js/script.js"></script>
+    <script src="../js/fetchProfileDataAPI.js" defer></script>
+    <script src="../js/writeProfileDataAPI.js" defer></script>
+    <script src="../js/script.js" defer></script>
 </head>
 
 <body>
@@ -67,47 +33,37 @@
                 <h4>Persönliche Daten</h4>
             </div>
             <div class="card-body">
-    <p>
-        <strong>Anrede:</strong> <?php echo htmlspecialchars($user['salutation']); ?>
-    </p>
-    <p>
-        <strong>Vorname:</strong> <?php echo htmlspecialchars($user['first_name']); ?>
-    </p>
-    <p>
-        <strong>Nachname:</strong> <?php echo htmlspecialchars($user['last_name']); ?>
-    </p>
-    <p>
-        <strong>Adresse:</strong>
-        <span id="address-value"><?php echo maskSensitiveData($user['address']); ?></span>
-        <button type="button" class="btn btn-link toggle-visibility" data-target="address-value" data-original="<?php echo htmlspecialchars($user['address']); ?>">Anzeigen</button>
-    </p>
-    <p>
-        <strong>PLZ:</strong>
-        <span id="zip-value"><?php echo maskSensitiveData($user['zip']); ?></span>
-        <button type="button" class="btn btn-link toggle-visibility" data-target="zip-value" data-original="<?php echo htmlspecialchars($user['zip']); ?>">Anzeigen</button>
-    </p>
-    <p>
-        <strong>Stadt:</strong>
-        <span id="city-value"><?php echo maskSensitiveData($user['city']); ?></span>
-        <button type="button" class="btn btn-link toggle-visibility" data-target="city-value" data-original="<?php echo htmlspecialchars($user['city']); ?>">Anzeigen</button>
-    </p>
-    <p>
-        <strong>E-Mail:</strong>
-        <span id="email-value"><?php echo maskSensitiveData($user['email']); ?></span>
-        <button type="button" class="btn btn-link toggle-visibility" data-target="email-value" data-original="<?php echo htmlspecialchars($user['email']); ?>">Anzeigen</button>
-    </p>
-    <p>
-        <strong>Benutzername:</strong> <?php echo htmlspecialchars($user['username']); ?>
-    </p>
-    <div class="card-footer text-center">
-    <a class="btn btn-primary" href="/Frontend/sites/myorders.php" class="btn btn-primary mt-3">Meine Bestellungen</a>
-    </button>
-    </div>
-</div>
+                <p><strong>Anrede:</strong> <span id="salutation"></span></p>
+                <p><strong>Vorname:</strong> <span id="first_name"></span></p>
+                <p><strong>Nachname:</strong> <span id="last_name"></span></p>
+                <p>
+                    <strong>Adresse:</strong>
+                    <span id="address"></span>
+                    <button type="button" class="btn btn-link toggle-visibility" data-target="address">Anzeigen</button>
+                </p>
+                <p>
+                    <strong>PLZ:</strong>
+                    <span id="zip"></span>
+                    <button type="button" class="btn btn-link toggle-visibility" data-target="zip">Anzeigen</button>
+                </p>
+                <p>
+                    <strong>Stadt:</strong>
+                    <span id="city"></span>
+                    <button type="button" class="btn btn-link toggle-visibility" data-target="city">Anzeigen</button>
+                </p>
+                <p>
+                    <strong>E-Mail:</strong>
+                    <span id="email"></span>
+                    <button type="button" class="btn btn-link toggle-visibility" data-target="email">Anzeigen</button>
+                </p>
+                <p><strong>Benutzername:</strong> <span id="username"></span></p>
+
+                <div class="card-footer text-center">
+                    <a class="btn btn-primary" href="/Frontend/sites/myorders.php" class="btn btn-primary mt-3">Meine Bestellungen</a>
+                </div>
+            </div>
             <div class="card-footer text-center">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">
-                    Daten bearbeiten
-                </button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">Daten bearbeiten</button>
             </div>
         </div>
     </div>
@@ -144,7 +100,7 @@
                             <label for="password" class="form-label">Passwort</label>
                             <input type="password" class="form-control" id="password" name="password" required>
                         </div>
-                        <input type="hidden" id="user_id" name="user_id" value="<?php echo htmlspecialchars($user_id); ?>">
+                        <input type="hidden" id="user_id" name="user_id" value="<?php echo htmlspecialchars($_SESSION['user_id'], ENT_QUOTES, 'UTF-8'); ?>">
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
                             <button type="button" id="saveChanges" class="btn btn-primary">Speichern</button>
@@ -154,72 +110,5 @@
             </div>
         </div>
     </div>
-
-    <script>
-    $(document).ready(function() {
-        $('#saveChanges').click(function() {
-            console.log('Speichern-Button wurde geklickt'); // Debugging-Ausgabe
-
-            const field = $('#field').val();
-            const newValue = $('#newValue').val();
-            const userId = $('#user_id').val();
-            const password = $('#password').val();
-            const errorMessage = $('#error-message');
-
-            // Fehlerbereich zurücksetzen
-            errorMessage.hide().text('');
-
-            if (!password.trim()) {
-                errorMessage.text('Bitte geben Sie Ihr Passwort ein.').show();
-                return;
-            }
-
-            console.log('Daten, die gesendet werden:', { field, newValue, userId, password }); // Debugging-Ausgabe
-
-            $.ajax({
-                url: '/Backend/logic/updateProfile.php',
-                method: 'POST',
-                data: {
-                    field: field,
-                    newValue: newValue,
-                    password: password,
-                    user_id: userId
-                },
-                dataType: 'json',
-                success: function(response) {
-                    console.log('Antwort vom Server:', response); // Debugging-Ausgabe
-                    if (response.success) {
-                        alert(response.message);
-                        location.reload(); // Seite neu laden, um die Änderungen anzuzeigen
-                    } else {
-                        errorMessage.text(response.message).show(); // Fehler anzeigen
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Fehler bei der AJAX-Anfrage:', error); // Debugging-Ausgabe
-                    errorMessage.text('Fehler beim Aktualisieren der Daten.').show();
-                }
-            });
-        });
-   
-
-    $('.toggle-visibility').click(function() {
-            const targetId = $(this).data('target');
-            const originalValue = $(this).data('original');
-            const targetElement = $('#' + targetId);
-
-            if ($(this).text() === 'Anzeigen') {
-                // Zeige den Originalwert an
-                targetElement.text(originalValue);
-                $(this).text('Verbergen');
-            } else {
-                // Maskiere den Wert
-                targetElement.text('*'.repeat(originalValue.length));
-                $(this).text('Anzeigen');
-            }
-        });
-    });
-</script>
 </body>
-
 </html>
