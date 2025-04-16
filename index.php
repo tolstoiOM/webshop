@@ -1,21 +1,5 @@
 <?php
-  ini_set('display_errors', 1);
-  ini_set('display_startup_errors', 1);
-  error_reporting(E_ALL);
-  // Verbindung zur Datenbank herstellen
-  require_once 'Backend/config/config.php';
-
-  // Produkte aus der Datenbank abrufen
-  $sql = "SELECT id, name, description, price, image_path FROM products";
-  $result = $conn->query($sql);
-
-  // Überprüfen, ob Produkte vorhanden sind
-  $products = [];
-  if ($result && $result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-      $products[] = $row;
-    }
-  }
+  require_once 'Backend/config/session.php';
 ?>
 
 <!DOCTYPE html>
@@ -29,8 +13,7 @@
   <link rel="stylesheet" href="Frontend/res/css/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="Frontend/js/script.js" defer></script>
-
+  <script src="Frontend/js/fetchAllProducts.js" defer></script>
 </head>
 
 <body>
