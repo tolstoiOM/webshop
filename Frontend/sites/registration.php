@@ -1,3 +1,7 @@
+<?php
+    require_once '../../Backend/config/session.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,7 +12,10 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
   <link rel="stylesheet" href="../res/css/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-  <script src="../js/script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="../js/writeProfileDataAPI.js" defer></script>
+  <script src="../js/script.js" defer></script>
 </head>
 
 <body>
@@ -102,48 +109,6 @@
     </div>
   </div>
 
-  <script>
-    document.getElementById('registration-form').addEventListener('submit', function (event) {
-      event.preventDefault(); // Prevent the default form submission
-
-      const formData = new FormData(event.target);
-      const data = Object.fromEntries(formData.entries());
-
-      // Validate passwords match
-      if (data.password !== data.confirmPassword) {
-        const messageDiv = document.getElementById('registration-message');
-        messageDiv.innerHTML = `<div class="alert alert-danger">Passwords do not match. Please try again.</div>`;
-        return;
-      }
-
-      fetch('/Backend/logic/register_process.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
-        .then((response) => response.json())
-        .then((result) => {
-          const messageDiv = document.getElementById('registration-message');
-          if (result.success) {
-            messageDiv.innerHTML = `<div class="alert alert-success">${result.message}</div>`;
-            setTimeout(() => {
-              window.location.href = '/Frontend/sites/login.php';
-            }, 2000); // Redirect after 2 seconds
-          } else {
-            messageDiv.innerHTML = `<div class="alert alert-danger">${result.message}</div>`;
-          }
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-          const messageDiv = document.getElementById('registration-message');
-          messageDiv.innerHTML = `<div class="alert alert-danger">An error occurred. Please try again later.</div>`;
-        });
-    });
-  </script>
-
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>

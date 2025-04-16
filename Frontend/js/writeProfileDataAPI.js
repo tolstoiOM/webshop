@@ -1,50 +1,45 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const saveChangesButton = document.getElementById('saveChanges');
-    const errorMessage = document.getElementById('error-message');
+    const registrationForm = document.getElementById('registration-form');
+    if (registrationForm) {
+      registrationForm.addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent the default form submission
 
-    saveChangesButton.addEventListener('click', function () {
+    const formData = new FormData(event.target);
+    const data = Object.fromEntries(formData.entries());
 
-        const field = document.getElementById('field').value;
-        const newValue = document.getElementById('newValue').value;
-        const userId = document.getElementById('user_id').value;
-        const password = document.getElementById('password').value;
+    // Validate passwords match
+    if (data.password !== data.confirmPassword) {
+      const messageDiv = document.getElementById('registration-message');
+      messageDiv.innerHTML = `<div class="alert alert-danger">Passwörter stimmen nicht überein.</div>`;
+      return;
+    }
 
-        // Fehlerbereich zurücksetzen
-        errorMessage.style.display = 'none';
-        errorMessage.textContent = '';
-
-        // Validierung der Eingabefelder
-        if (!field || !newValue || !password) {
-            errorMessage.textContent = 'Bitte füllen Sie alle Felder aus.';
-            errorMessage.style.display = 'block';
-            return;
+    fetch('/Backend/logic/writeProfileDataAPI.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        const messageDiv = document.getElementById('registration-message');
+        if (result.success) {
+          messageDiv.innerHTML = `<div class="alert alert-success">${result.message}</div>`;
+          setTimeout(() => {
+            window.location.href = '/Frontend/sites/login.php';
+          }, 2000); // Redirect after 2 seconds
+        } else {
+          messageDiv.innerHTML = `<div class="alert alert-danger">${result.message}</div>`;
         }
-
-        fetch('/Backend/logic/updateProfileDataAPI.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                field: field,
-                newValue: newValue,
-                password: password,
-                user_id: userId,
-            }),
-        })
-            .then((response) => response.json())
-            .then((response) => {
-                if (response.success) {
-                    alert(response.message);
-                    location.reload(); // Seite neu laden, um die Änderungen anzuzeigen
-                } else {
-                    errorMessage.textContent = response.message;
-                    errorMessage.style.display = 'block';
-                }
-            })
-            .catch((error) => {
-                errorMessage.textContent = 'Fehler beim Aktualisieren der Daten.';
-                errorMessage.style.display = 'block';
-            });
-    });
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        const messageDiv = document.getElementById('registration-message');
+        messageDiv.innerHTML = `<div class="alert alert-danger">Ein Fehler ist aufgetreten. Bitte versuchen Sie es später noch einmal.</div>`;
+      });
+  });
+} else {
+    console.error('Das Element mit der ID "registration-form" wurde nicht gefunden.');
+  }
 });

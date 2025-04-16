@@ -2,7 +2,6 @@ $(document).ready(function () {
     // Kategorien und Produkte laden
     loadCategories();
     loadProducts('all'); // Standardmäßig alle Produkte laden
-    updateCartCount(); // Warenkorb-Counter beim Laden der Seite aktualisieren
 
     // Kategorien laden
     function loadCategories() {
@@ -66,6 +65,24 @@ $(document).ready(function () {
             }
         });
     }
+
+    // Überprüfen, ob der Benutzer angemeldet ist
+    $.ajax({
+        url: '../../Backend/logic/getSessionStatus.php', // API zum Überprüfen des Login-Status
+        method: 'GET',
+        dataType: 'json', // Automatisch als JSON parsen
+        success: function (sessionStatus) {
+            if (sessionStatus.loggedIn) {
+                // Nur wenn der Benutzer angemeldet ist, wird der Warenkorb-Counter aktualisiert
+                updateCartCount();
+            } else {
+                console.log('Benutzer ist nicht angemeldet. Warenkorb-Counter wird nicht aktualisiert.');
+            }
+        },
+        error: function () {
+            console.error('Fehler beim Überprüfen des Login-Status.');
+        }
+    });
 
     // Warenkorb-Counter aktualisieren
     function updateCartCount() {
