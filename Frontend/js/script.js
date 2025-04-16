@@ -92,7 +92,7 @@ $(document).ready(function () {
 
         // Check if the user is logged in
         $.ajax({
-            url: '../../Backend/logic/session_status.php', // Check session status
+            url: '../../Backend/logic/getSessionStatus.php', // Check session status
             method: 'GET',
             dataType: 'json', // Automatically parse the response as JSON
             success: function (sessionStatus) {

@@ -116,8 +116,8 @@ footer {
 /* Warenkorb */
 #cart-count {
   font-weight: bold;
-  font-size: 0.6rem;
-  vertical-align: top; /* Optional: Justiert die Position */
+  font-size: 1rem;
+  vertical-align: bottom; /* Optional: Justiert die Position */
 }
 
 button.add-to-cart {

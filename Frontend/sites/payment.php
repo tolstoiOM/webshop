@@ -1,3 +1,12 @@
+<?php
+    require_once '../../Backend/config/session.php';
+
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: login.php');
+        exit();
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,7 +19,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../js/script.js"></script>
+    <script src="../js/writePaymentAPI.js" defer></script>
+    <script src="../js/script.js" defer></script>
 </head>
 
 <body>
@@ -49,56 +59,5 @@
             </div>
         </div>
     </div>
-
-    <script>
-        $(document).ready(function () {
-            // Zeige die entsprechenden Eingabefelder basierend auf der Zahlungsmethode
-            $('#method').change(function () {
-                const method = $(this).val();
-                if (method === 'Kreditkarte') {
-                    $('#creditCardDetails').show();
-                    $('#paypalDetails').hide();
-                } else if (method === 'Paypal') {
-                    $('#creditCardDetails').hide();
-                    $('#paypalDetails').show();
-                }
-            });
-
-            // Zahlung durchführen
-            $('#submitPayment').click(function () {
-        const method = $('#method').val();
-        const cartItems = [
-            // Beispiel: Produkte im Warenkorb (dynamisch generieren)
-            { product_id: 1, quantity: 2, price: 10.99 },
-            { product_id: 2, quantity: 1, price: 15.49 }
-        ];
-        const totalAmount = 37.47; // Beispiel: Gesamtbetrag (dynamisch berechnen)
-
-        $.ajax({
-            url: '/Backend/logic/transaction.php',
-            method: 'POST',
-            data: {
-                method,
-                cartItems: JSON.stringify(cartItems),
-                totalAmount
-            },
-            dataType: 'json',
-            success: function (response) {
-                if (response.success) {
-                    window.location.href = response.redirectUrl;
-                } else {
-                    alert(response.message);
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error("Fehler: " + error);
-                console.error("Antwort: " + xhr.responseText);
-                alert("Ein Fehler ist aufgetreten: " + xhr.responseText);
-            }
-        });
-    });
-});
-    </script>
 </body>
-
 </html>
