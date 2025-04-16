@@ -1,4 +1,12 @@
-<!-- filepath: /Applications/XAMPP/xamppfiles/htdocs/webshop/Frontend/sites/orderDetails.php -->
+<?php
+    require_once '../../Backend/config/session.php';
+
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: login.php');
+        exit();
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -6,10 +14,18 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Bestellung ansehen</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="../res/css/style.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="../js/script.js"></script>
+        <script src="../js/fetchOrderDetailsAPI.js" defer></script>
+        <script src="../js/script.js" defer></script>
     </head>
+
     <body>
+
+        <?php include '../sites/navbar.php'; ?>
+
         <div class="container mt-5">
             <h2 class="text-center">Bestellung ansehen</h2>
             <div id="orderDetails" class="mt-4"></div>
@@ -18,72 +34,5 @@
                 <a href="/index.php" class="btn btn-primary">Zurück zur Startseite</a>
             </div>
         </div>
-
-        <script>
-            $(document).ready(function () {
-                const urlParams = new URLSearchParams(window.location.search);
-                const orderId = urlParams.get('orderId');
-
-                if (!orderId) {
-                    $('#orderDetails').html('<div class="alert alert-danger">Bestell-ID fehlt.</div>');
-                    return;
-                }
-
-                // API-Aufruf, um Bestelldetails abzurufen
-                $.getJSON('/Backend/logic/getOrderDetails.php', { orderId: orderId }, function (response) {
-                    if (!response.success) {
-                        $('#orderDetails').html('<div class="alert alert-danger">' + response.message + '</div>');
-                        return;
-                    }
-
-                    const order = response.order;
-                    const orderItems = response.orderItems;
-
-                    let html = `
-                        <div class="card">
-                            <div class="card-header">
-                                <h4>Bestelldetails</h4>
-                            </div>
-                            <div class="card-body">
-                                <p><strong>Bestellnummer:</strong> ${order.id}</p>
-                                <p><strong>Datum:</strong> ${order.created_at}</p>
-                                <p><strong>Gesamtbetrag:</strong> €${parseFloat(order.total_price).toFixed(2)}</p>
-                                <h5 class="mt-4">Produkte</h5>
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Produkt</th>
-                                            <th>Menge</th>
-                                            <th>Preis</th>
-                                            <th>Gesamt</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                    `;
-
-                    orderItems.forEach(item => {
-                        html += `
-                            <tr>
-                                <td>${item.name}</td>
-                                <td>${item.quantity}</td>
-                                <td>€${parseFloat(item.price).toFixed(2)}</td>
-                                <td>€${(item.quantity * item.price).toFixed(2)}</td>
-                            </tr>
-                        `;
-                    });
-
-                    html += `
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    `;
-
-                    $('#orderDetails').html(html);
-                }).fail(function () {
-                    $('#orderDetails').html('<div class="alert alert-danger">Fehler beim Abrufen der Bestelldetails.</div>');
-                });
-            });
-        </script>
     </body>
 </html>
