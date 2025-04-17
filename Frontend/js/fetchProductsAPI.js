@@ -41,7 +41,7 @@ $(document).ready(function () {
                         products.forEach(product => {
                             productContainer.append(`
                                 <div class="col-md-4">
-                                    <div class="card mb-4">
+                                    <div class="card mb-4" draggable="true" ondragstart="handleDragStart(event)" data-id="${product.id}">
                                         <img src="${product.image_path}" class="card-img-top" alt="${product.name}">
                                         <div class="card-body">
                                             <h5 class="card-title">${product.name}</h5>
@@ -83,25 +83,6 @@ $(document).ready(function () {
             console.error('Fehler beim Überprüfen des Login-Status.');
         }
     });
-
-    // Warenkorb-Counter aktualisieren
-    function updateCartCount() {
-        $.ajax({
-            url: '../../Backend/logic/getProductsAPI.php',
-            method: 'GET',
-            data: { action: 'getCartCount' },
-            success: function (data) { // Antwort ist bereits ein JSON-Objekt
-                if (data.success) {
-                    $('#cart-count').text(data.cartCount);
-                } else {
-                    console.error('Fehler in der Antwort:', data.message);
-                }
-            },
-            error: function () {
-                console.error('Fehler beim Abrufen der Warenkorb-Anzahl.');
-            }
-        });
-    }
 
     // Produkt zum Warenkorb hinzufügen
     $(document).off('click', '.add-to-cart').on('click', '.add-to-cart', function () {
@@ -188,7 +169,7 @@ $(document).ready(function () {
                 products.forEach(product => {
                 const html = `
                     <div class="col-md-4">
-                        <div class="card mb-4">
+                        <div class="card mb-4" draggable="true" ondragstart="handleDragStart(event)" data-id="${product.id}">
                             <img src="${product.image_path}" class="card-img-top" alt="${product.name}">
                             <div class="card-body">
                                 <h5 class="card-title">${product.name}</h5>
@@ -210,6 +191,25 @@ $(document).ready(function () {
     }
 });
 
+// Warenkorb-Counter aktualisieren
+function updateCartCount() {
+    $.ajax({
+        url: '../../Backend/logic/getProductsAPI.php',
+        method: 'GET',
+        data: { action: 'getCartCount' },
+        success: function (data) { // Antwort ist bereits ein JSON-Objekt
+            if (data.success) {
+                $('#cart-count').text(data.cartCount);
+            } else {
+                console.error('Fehler in der Antwort:', data.message);
+            }
+        },
+        error: function () {
+            console.error('Fehler beim Abrufen der Warenkorb-Anzahl.');
+        }
+    });
+}
+
 function searchProducts() {
     const searchInput = document.getElementById('search-input').value.toLowerCase();
     const productsContainer = document.getElementById('products');
@@ -227,7 +227,7 @@ function searchProducts() {
             filteredProducts.forEach((product) => {
                 productsContainer.innerHTML += `
                     <div class="col-md-4">
-                        <div class="card mb-4">
+                        <div class="card mb-4" draggable="true" ondragstart="handleDragStart(event)" data-id="${product.id}">
                             <img src="${product.image_path}" class="card-img-top" alt="${product.name}">
                             <div class="card-body">
                                 <h5 class="card-title">${product.name}</h5>
@@ -241,4 +241,46 @@ function searchProducts() {
             });
         })
         .catch((error) => console.error('Fehler beim Laden der Produkte:', error));
+}
+
+// Funktion, die beim Start des Dragging aufgerufen wird
+function handleDragStart(event) {
+    console.log("Drag gestartet:", event.target); // Debugging-Log
+    const productId = event.target.closest('.card').getAttribute('data-id'); // Sucht die nächste Karte
+    if (productId) {
+        event.dataTransfer.setData('text/plain', productId); // Produkt-ID speichern
+        console.log("Produkt-ID gesetzt:", productId);
+    } else {
+        console.error('Produkt-ID nicht gefunden.');
+    }
+}
+
+// Funktion, die das Standardverhalten beim Dragging über das Drop-Ziel verhindert
+function handleDragOver(event) {
+    event.preventDefault(); // Erlaubt das Droppen
+}
+
+// Funktion, die beim Droppen aufgerufen wird
+function handleDrop(event) {
+    event.preventDefault();
+    const productId = event.dataTransfer.getData('text/plain'); // Produkt-ID abrufen
+
+    // AJAX-Request um das Produkt zum Warenkorb hinzuzufügen
+    $.ajax({
+        url: '../../Backend/logic/getProductsAPI.php',  // Ziel-URL
+        method: 'POST',  // HTTP-Methode
+        //contentType: 'application/json',  // Senden als JSON
+        data: { action: 'addToCart', productId: productId },  // Daten
+        success: function(data) {
+            if (data.success) {
+                updateCartCount();  // Warenkorb-Counter aktualisieren
+                alert('Produkt wurde dem Warenkorb hinzugefügt!');
+            } else {
+                console.error('Fehler beim Hinzufügen zum Warenkorb:', data.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Fehler beim Hinzufügen zum Warenkorb:', error);
+        }
+    });
 }

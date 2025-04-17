@@ -82,6 +82,7 @@
             $cartCount = $stmt->fetchColumn();
 
             echo json_encode(['success' => true, 'cartCount' => $cartCount]);
+            
             exit();
         } elseif ($action === 'removeFromCart') {
             // Produkt aus dem Warenkorb entfernen
