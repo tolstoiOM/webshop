@@ -269,7 +269,6 @@ function handleDrop(event) {
     $.ajax({
         url: '../../Backend/logic/getProductsAPI.php',  // Ziel-URL
         method: 'POST',  // HTTP-Methode
-        //contentType: 'application/json',  // Senden als JSON
         data: { action: 'addToCart', productId: productId },  // Daten
         success: function(data) {
             if (data.success) {

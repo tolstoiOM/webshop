@@ -89,7 +89,15 @@
             $userId = $_SESSION['user_id'];
             $productId = $_POST['productId'];
 
-            $stmt = $pdo->prepare("DELETE FROM cart WHERE user_id = ? AND product_id = ?");
+            $stmt = $pdo->prepare("SELECT quantity FROM cart WHERE user_id = ? AND product_id = ?");
+            $stmt->execute([$userId, $productId]);
+            $cartItem = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($cartItem && $cartItem['quantity'] > 1) {
+                $stmt = $pdo->prepare("UPDATE cart SET quantity = quantity - 1 WHERE user_id = ? AND product_id = ?");
+            } else {
+                $stmt = $pdo->prepare("DELETE FROM cart WHERE user_id = ? AND product_id = ?");
+            }
             $stmt->execute([$userId, $productId]);
 
             $stmt = $pdo->prepare("SELECT SUM(quantity) AS cartCount FROM cart WHERE user_id = ?");
