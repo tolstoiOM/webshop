@@ -209,3 +209,36 @@ $(document).ready(function () {
             });
     }
 });
+
+function searchProducts() {
+    const searchInput = document.getElementById('search-input').value.toLowerCase();
+    const productsContainer = document.getElementById('products');
+
+    // Beispiel: Produkte aus einer API laden und filtern
+    fetch('/Backend/logic/getProductsAPI.php?action=getAllProducts')
+        .then((response) => response.json())
+        .then((products) => {
+            productsContainer.innerHTML = ''; // Vorherige Produkte entfernen
+
+            const filteredProducts = products.filter((product) =>
+                product.name.toLowerCase().includes(searchInput)
+            );
+
+            filteredProducts.forEach((product) => {
+                productsContainer.innerHTML += `
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <img src="${product.image_path}" class="card-img-top" alt="${product.name}">
+                            <div class="card-body">
+                                <h5 class="card-title">${product.name}</h5>
+                                <p class="card-text">${product.description}</p>
+                                <p class="card-text"><strong>Preis:</strong> €${product.price}</p>
+                                <button class="btn btn-success add-to-cart" data-id="${product.id}">In den Warenkorb</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        })
+        .catch((error) => console.error('Fehler beim Laden der Produkte:', error));
+}
