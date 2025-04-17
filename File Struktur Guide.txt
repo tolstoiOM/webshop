@@ -16,8 +16,8 @@ Dateien:
 Zweck: Geschäftslogik, also alles, was "arbeitet" (z. B. Registrieren, Login, Produkte verwalten)
 Dateien:
 
-    AuthLogic.php → Login, Registrierung
-    ProductLogic.php → Produktverwaltung
+    authLogic.php → Login, Registrierung
+    getProductsAPI.php → Produktverwaltung
     UserLogic.php → Nutzeraktionen
     UploadHandler.php → File-Uploads
 
@@ -55,7 +55,7 @@ Dateien:
 Zweck: Clientseitige Logik
 Dateien:
 
-    script.js → Hier kommen alle AJAX-Calls hin (z. B. Login-Request, Produkte holen etc.)
+    fetchProductsAPI.js → Hier kommen alle AJAX-Calls hin (z. B. Login-Request, Produkte holen etc.)
 
 Optional:
 
@@ -74,11 +74,11 @@ Optional:
 
     Frontend/sites/index.php ruft per fetch() eine API auf:
 
-fetch('../../Backend/logic/ProductLogic.php?action=getAll')
+fetch('../../Backend/logic/getProductsAPI.php?action=getAll')
   .then(res => res.json())
   .then(data => renderProducts(data));
 
-ProductLogic.php verarbeitet das Request und gibt JSON zurück:
+getProductsAPI.php verarbeitet das Request und gibt JSON zurück:
 
     header('Content-Type: application/json');
     echo json_encode($productService->getAllProducts());
@@ -101,7 +101,7 @@ class Product {
     // Getter, Setter etc.
 }
 
-Und dann z. B. im ProductLogic.php:
+Und dann z. B. im getProductsAPI.php:
 
 $products = $db->getAllProducts(); // gibt Array von Product-Objekten zurück
 echo json_encode(array_map(fn($p) => $p->toArray(), $products));

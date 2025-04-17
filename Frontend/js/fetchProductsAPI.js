@@ -6,7 +6,7 @@ $(document).ready(function () {
     // Kategorien laden
     function loadCategories() {
         $.ajax({
-            url: '../../Backend/logic/ProductLogic.php',
+            url: '../../Backend/logic/getProductsAPI.php',
             method: 'GET',
             data: { action: 'getCategories' },
             success: function (data) { // Antwort ist bereits ein JSON-Objekt
@@ -28,7 +28,7 @@ $(document).ready(function () {
     // Produkte laden
     function loadProducts(categoryId) {
         $.ajax({
-            url: '../../Backend/logic/ProductLogic.php',
+            url: '../../Backend/logic/getProductsAPI.php',
             method: 'GET',
             data: { action: 'getProducts', categoryId: categoryId },
             success: function (data) { // Antwort ist bereits ein JSON-Objekt
@@ -87,7 +87,7 @@ $(document).ready(function () {
     // Warenkorb-Counter aktualisieren
     function updateCartCount() {
         $.ajax({
-            url: '../../Backend/logic/ProductLogic.php',
+            url: '../../Backend/logic/getProductsAPI.php',
             method: 'GET',
             data: { action: 'getCartCount' },
             success: function (data) { // Antwort ist bereits ein JSON-Objekt
@@ -118,7 +118,7 @@ $(document).ready(function () {
                 if (sessionStatus.loggedIn) {
                     // User is logged in, proceed to add the product to the cart
                     $.ajax({
-                        url: '../../Backend/logic/ProductLogic.php',
+                        url: '../../Backend/logic/getProductsAPI.php',
                         method: 'POST',
                         data: { action: 'addToCart', productId: productId },
                         success: function (data) {
@@ -149,7 +149,7 @@ $(document).ready(function () {
     $(document).on('click', '.remove-from-cart', function () {
         const productId = $(this).data('id');
         $.ajax({
-            url: '../../Backend/logic/ProductLogic.php',
+            url: '../../Backend/logic/getProductsAPI.php',
             method: 'POST',
             data: { action: 'removeFromCart', productId: productId },
             success: function (data) { // Antwort ist bereits ein JSON-Objekt
@@ -171,4 +171,41 @@ $(document).ready(function () {
         let categoryId = $(this).val();
         loadProducts(categoryId);
     });
+
+    function loadAllProducts() {
+        $.ajax({
+            url: '../../Backend/logic/getProductsAPI.php',
+            method: 'GET',
+            dataType: 'json',
+            data: { action: 'getAllProducts' },
+            success: function (products) {
+                const container = $('#products');
+                if (!products.length) {
+                container.html('<p class="text-center">Keine Produkte gefunden.</p>');
+                return;
+                }
+        
+                products.forEach(product => {
+                const html = `
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <img src="${product.image_path}" class="card-img-top" alt="${product.name}">
+                            <div class="card-body">
+                                <h5 class="card-title">${product.name}</h5>
+                                <p class="card-text">${product.description}</p>
+                                <p class="card-text"><strong>Preis:</strong> ${product.price} €</p>
+                                 <button class="btn btn-success add-to-cart" data-id="${product.id}">In den Warenkorb</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.append(html);
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error('Fehler beim Laden der Produkte:', error);
+                $('#products').html('<p class="text-danger text-center">Produkte konnten nicht geladen werden.</p>');
+            }
+            });
+    }
 });

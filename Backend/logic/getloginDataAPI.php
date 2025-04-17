@@ -1,6 +1,6 @@
 <?php
     require_once '../config/config.php';
-    require_once 'AuthLogic.php';
+    require_once 'authLogic.php';
     header('Content-Type: application/json'); // Set the response type to JSON
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {

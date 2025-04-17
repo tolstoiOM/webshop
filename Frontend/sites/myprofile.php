@@ -20,7 +20,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="../js/fetchProfileDataAPI.js" defer></script>
     <script src="../js/updateProfileDataAPI.js" defer></script>
-    <script src="../js/script.js" defer></script>
+    <script src="../js/fetchProductsAPI.js" defer></script>
 </head>
 
 <body>

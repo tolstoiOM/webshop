@@ -1,6 +1,4 @@
 <?php
-    // filepath: c:\xampp\htdocs\webshop\Backend\logic\AuthLogic.php
-
     require_once '../config/config.php';
 
     class AuthLogic
