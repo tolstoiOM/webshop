@@ -16,7 +16,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 <a href="/index.php" class="nav-link text-dark p-2"><i class="fas fa-home"></i></a>
             `;
 
-            if (data.loggedIn) {
+            if (data.loggedIn && data.role === 'administrator') {
+                navbarIcons.innerHTML += `
+                    <a href="/Frontend/sites/cart.php" class="nav-link text-dark p-2" id="cart-icon" ondragover="handleDragOver(event)" ondrop="handleDrop(event)"><i class="fas fa-shopping-bag"> (<span id="cart-count">0</span>)</i></a>
+                    <a href="/Frontend/sites/myprofile.php" class="nav-link text-dark p-2"><i class="fas fa-user"></i></a>
+                    <a href="/Frontend/sites/users.php" class="nav-link text-dark p-2"><i class="fas fa-users"></i></a>
+                    <a href="/Backend/logic/logoutLogic.php" class="btn btn-danger ms-3">Logout</a>
+                `;
+            } else if (data.loggedIn) {
                 // Show shopping bag and user icons for logged-in users
                 navbarIcons.innerHTML += `
                     <a href="/Frontend/sites/cart.php" class="nav-link text-dark p-2" id="cart-icon" ondragover="handleDragOver(event)" ondrop="handleDrop(event)"><i class="fas fa-shopping-bag"> (<span id="cart-count">0</span>)</i></a>

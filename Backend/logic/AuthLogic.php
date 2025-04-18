@@ -71,12 +71,12 @@
         public function loginUser($identifier, $password)
         {
             // Check if the user exists using email
-            $stmt = $this->pdo->prepare("SELECT * FROM users WHERE email = :identifier OR username = :identifier");
+            $stmt = $this->pdo->prepare("SELECT * FROM users WHERE (email = :identifier OR username = :identifier) AND status = 'active'");
             $stmt->execute(['identifier' => $identifier]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$user) {
-                return ['success' => false, 'message' => 'Ungültige E-Mail oder ungültiges Passwort.'];
+                return ['success' => false, 'message' => 'Ungültige E-Mail, Benutzername oder der Benutzer ist inaktiv.'];
             }
 
             // Verify the password
@@ -87,8 +87,9 @@
             // Start a session and store user information
             session_start();
             $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username']; // Optional: Store username if needed
+            $_SESSION['username'] = $user['username'];
             $_SESSION['email'] = $user['email'];
+            $_SESSION['role'] = $user['role'];
 
             return ['success' => true, 'message' => 'Login erfolgreich.'];
         }

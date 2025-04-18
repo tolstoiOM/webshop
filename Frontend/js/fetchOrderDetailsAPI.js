@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const order = response.order;
             const orderItems = response.orderItems;
+            const isAdmin = response.isAdmin;
 
             let html = `
                 <div class="card">
@@ -38,6 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     <th>Menge</th>
                                     <th>Preis</th>
                                     <th>Gesamt</th>
+                                    ${isAdmin ? '<th>Aktionen</th>' : ''}
                                 </tr>
                             </thead>
                             <tbody>
@@ -50,6 +52,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         <td>${item.quantity}</td>
                         <td>€${parseFloat(item.price).toFixed(2)}</td>
                         <td>€${(item.quantity * item.price).toFixed(2)}</td>
+                        ${isAdmin ? `
+                        <td>
+                            <button class="btn btn-danger btn-sm remove-item" data-order-id="${order.id}" data-product-id="${item.product_id}">Entfernen</button>
+                        </td>
+                        ` : ''}
                     </tr>
                 `;
             });
@@ -62,7 +69,40 @@ document.addEventListener('DOMContentLoaded', function () {
             `;
 
             orderDetailsContainer.innerHTML = html;
-    })
+
+            // Event-Listener für die "Entfernen"-Buttons hinzufügen
+            if (isAdmin) {
+                document.querySelectorAll('.remove-item').forEach((button) => {
+                    button.addEventListener('click', function () {
+                        const orderId = this.dataset.orderId;
+                        const productId = this.dataset.productId;
+
+                        if (confirm('Möchten Sie dieses Produkt wirklich aus der Bestellung entfernen?')) {
+                            fetch('/Backend/logic/deleteOrderItemAPI.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ order_id: orderId, product_id: productId }),
+                            })
+                                .then((response) => response.json())
+                                .then((result) => {
+                                    if (result.success) {
+                                        alert(result.message);
+                                        location.reload(); // Seite neu laden, um die Änderungen anzuzeigen
+                                    } else {
+                                        alert('Fehler: ' + result.message);
+                                    }
+                                })
+                                .catch((error) => {
+                                    console.error('Fehler beim Entfernen des Produkts:', error);
+                                    alert('Fehler beim Entfernen des Produkts.');
+                                });
+                        }
+                    });
+                });
+            }
+        })
     .catch(() => {
         orderDetailsContainer.innerHTML = '<div class="alert alert-danger">Fehler beim Abrufen der Bestelldetails.</div>';
     });

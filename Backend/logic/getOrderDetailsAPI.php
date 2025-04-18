@@ -9,6 +9,7 @@
     }
 
     $orderId = $_GET['orderId'];
+    $isAdmin = ($_SESSION['role'] === 'administrator');
 
     // Bestellung abrufen
     $stmt = $pdo->prepare("SELECT * FROM orders WHERE id = ?");
@@ -21,7 +22,7 @@
     }
 
     // Produkte der Bestellung abrufen
-    $stmt = $pdo->prepare("SELECT oi.quantity, oi.price, p.name FROM order_items oi JOIN products p ON oi.product_id = p.id WHERE oi.order_id = ?");
+    $stmt = $pdo->prepare("SELECT oi.quantity, oi.price, p.name, oi.product_id FROM order_items oi JOIN products p ON oi.product_id = p.id WHERE oi.order_id = ?");
     $stmt->execute([$orderId]);
     $orderItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -29,7 +30,8 @@
     echo json_encode([
         'success' => true,
         'order' => $order,
-        'orderItems' => $orderItems
+        'orderItems' => $orderItems,
+        'isAdmin' => $isAdmin
     ]);
     exit();
 ?>
