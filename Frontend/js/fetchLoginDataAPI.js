@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
 document.getElementById('login-form').addEventListener('submit', function (event) {
     event.preventDefault(); // Prevent the default form submission
 
-    const email = document.getElementById('email').value;
+    const identifier = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     const rememberLogin = document.getElementById('remember-login').checked;
 
@@ -37,7 +37,7 @@ document.getElementById('login-form').addEventListener('submit', function (event
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ identifier, password }),
     })
         .then((response) => response.json())
         .then((data) => {
@@ -45,11 +45,11 @@ document.getElementById('login-form').addEventListener('submit', function (event
             if (data.success) {
                 // Save credentials in cookies if "Remember Login" is checked
                 if (rememberLogin) {
-                    document.cookie = `email=${email}; path=/; max-age=604800; Secure`; // 7 days
+                    document.cookie = `identifier=${identifier}; path=/; max-age=604800; Secure`; // 7 days
                     document.cookie = `password=${password}; path=/; max-age=604800; Secure`; // 7 days
                 } else {
                     // Clear cookies if "Remember Login" is unchecked
-                    document.cookie = 'email=; path=/; max-age=0';
+                    document.cookie = 'identifier=; path=/; max-age=0';
                     document.cookie = 'password=; path=/; max-age=0';
                 }
 

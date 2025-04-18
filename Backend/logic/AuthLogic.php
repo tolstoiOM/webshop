@@ -16,15 +16,31 @@
             $requiredFields = ['salutation', 'firstName', 'lastName', 'address', 'zip', 'city', 'email', 'username', 'password'];
             foreach ($requiredFields as $field) {
                 if (empty($data[$field])) {
-                    return ['success' => false, 'message' => "Field '$field' is required."];
+                    return ['success' => false, 'message' => "Feld '$field' ist erforderlich."];
                 }
+            }
+
+            // Validate salutation
+            $validSalutations = ['Mr.', 'Ms.', 'Other'];
+            if (!in_array($data['salutation'], $validSalutations)) {
+                return ['success' => false, 'message' => 'Bitte wählen Sie eine gültige Anrede aus.'];
+            }
+
+            // Validate email format
+            if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+                return ['success' => false, 'message' => 'Bitte geben Sie eine gültige E-Mail-Adresse ein.'];
+            }
+
+            // Validate password match
+            if ($data['password'] !== $data['confirmPassword']) {
+                return ['success' => false, 'message' => 'Die Passwörter stimmen nicht überein.'];
             }
 
             // Check if username or email already exists
             $stmt = $this->pdo->prepare("SELECT * FROM users WHERE username = :username OR email = :email");
             $stmt->execute(['username' => $data['username'], 'email' => $data['email']]);
             if ($stmt->rowCount() > 0) {
-                return ['success' => false, 'message' => 'Username or email already exists.'];
+                return ['success' => false, 'message' => 'Benutzername oder E-Mail bereits vergeben.'];
             }
 
             // Hash the password
@@ -48,24 +64,24 @@
                 'password' => $hashedPassword
             ]);
 
-            return ['success' => true, 'message' => 'Registration successful.'];
+            return ['success' => true, 'message' => 'Registrierung erfolgreich.'];
         }
 
 
-        public function loginUser($email, $password)
+        public function loginUser($identifier, $password)
         {
             // Check if the user exists using email
-            $stmt = $this->pdo->prepare("SELECT * FROM users WHERE email = :email");
-            $stmt->execute(['email' => $email]);
+            $stmt = $this->pdo->prepare("SELECT * FROM users WHERE email = :identifier OR username = :identifier");
+            $stmt->execute(['identifier' => $identifier]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$user) {
-                return ['success' => false, 'message' => 'Invalid email or password.'];
+                return ['success' => false, 'message' => 'Ungültige E-Mail oder ungültiges Passwort.'];
             }
 
             // Verify the password
             if (!password_verify($password, $user['password'])) {
-                return ['success' => false, 'message' => 'Invalid email or password.'];
+                return ['success' => false, 'message' => 'Ungültige E-Mail oder ungültiges Passwort.'];
             }
 
             // Start a session and store user information
@@ -74,7 +90,7 @@
             $_SESSION['username'] = $user['username']; // Optional: Store username if needed
             $_SESSION['email'] = $user['email'];
 
-            return ['success' => true, 'message' => 'Login successful.'];
+            return ['success' => true, 'message' => 'Login erfolgreich.'];
         }
     }
 ?>

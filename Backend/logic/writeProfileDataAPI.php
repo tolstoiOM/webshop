@@ -10,7 +10,7 @@
 
         // Validate passwords match
         if ($data['password'] !== $data['confirmPassword']) {
-            echo json_encode(['success' => false, 'message' => 'Passwords do not match.']);
+            echo json_encode(['success' => false, 'message' => 'Passwörter stimmen nicht überein.']);
             exit;
         }
 

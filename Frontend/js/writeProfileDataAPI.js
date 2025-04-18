@@ -7,13 +7,28 @@ document.addEventListener('DOMContentLoaded', function () {
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData.entries());
 
-    // Validate passwords match
-    if (data.password !== data.confirmPassword) {
-      const messageDiv = document.getElementById('registration-message');
-      messageDiv.innerHTML = `<div class="alert alert-danger">Passwörter stimmen nicht überein.</div>`;
-      return;
+    const messageDiv = document.getElementById('registration-message');
+
+    // Validierung: Salutation
+    const validSalutations = ['Mr.', 'Ms.', 'Other'];
+    if (!validSalutations.includes(data.salutation)) {
+        messageDiv.innerHTML = `<div class="alert alert-danger">Bitte wählen Sie eine gültige Anrede aus.</div>`;
+        return;
     }
 
+    // Validierung: E-Mail-Adresse
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(data.email)) {
+        messageDiv.innerHTML = `<div class="alert alert-danger">Bitte geben Sie eine gültige E-Mail-Adresse ein.</div>`;
+        return;
+    }
+
+    // Validierung: Passwörter stimmen überein
+    if (data.password !== data.confirmPassword) {
+        messageDiv.innerHTML = `<div class="alert alert-danger">Passwörter stimmen nicht überein.</div>`;
+        return;
+    }
+    
     fetch('/Backend/logic/writeProfileDataAPI.php', {
       method: 'POST',
       headers: {
@@ -23,7 +38,6 @@ document.addEventListener('DOMContentLoaded', function () {
     })
       .then((response) => response.json())
       .then((result) => {
-        const messageDiv = document.getElementById('registration-message');
         if (result.success) {
           messageDiv.innerHTML = `<div class="alert alert-success">${result.message}</div>`;
           setTimeout(() => {
@@ -35,7 +49,6 @@ document.addEventListener('DOMContentLoaded', function () {
       })
       .catch((error) => {
         console.error('Error:', error);
-        const messageDiv = document.getElementById('registration-message');
         messageDiv.innerHTML = `<div class="alert alert-danger">Ein Fehler ist aufgetreten. Bitte versuchen Sie es später noch einmal.</div>`;
       });
   });

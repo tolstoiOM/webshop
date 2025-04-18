@@ -31,8 +31,8 @@
                     <div class="card-body">
                         <form id="login-form">
                             <div class="mb-3">
-                                <label for="email" class="form-label">E-Mail-Addresse</label>
-                                <input type="email" class="form-control" id="email" name="email" required>
+                                <label for="email" class="form-label">E-Mail-Adresse oder Benutzername</label>
+                                <input type="text" class="form-control" id="email" name="email" required>
                             </div>
                             <div class="mb-3">
                                 <label for="password" class="form-label">Passwort</label>

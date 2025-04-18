@@ -11,11 +11,11 @@
         $authLogic = new AuthLogic($pdo);
 
         // Get the email and password from the JSON data
-        $email = $data['email'] ?? '';
+        $identifier = $data['identifier'] ?? '';
         $password = $data['password'] ?? '';
 
         // Call the loginUser method
-        $result = $authLogic->loginUser($email, $password);
+        $result = $authLogic->loginUser($identifier, $password);
 
         // Return a JSON response
         echo json_encode($result);
