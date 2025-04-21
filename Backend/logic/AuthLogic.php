@@ -91,6 +91,32 @@
             $_SESSION['email'] = $user['email'];
             $_SESSION['role'] = $user['role'];
 
+            // Produkte aus der Session in die Datenbank übertragen
+            if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
+                foreach ($_SESSION['cart'] as $item) {
+                    $productId = $item['productId'];
+                    $quantity = $item['quantity'];
+
+                    // Prüfen, ob das Produkt bereits im Warenkorb des Benutzers existiert
+                    $stmt = $this->pdo->prepare("SELECT quantity FROM cart WHERE user_id = ? AND product_id = ?");
+                    $stmt->execute([$user['id'], $productId]);
+                    $existingCartItem = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                    if ($existingCartItem) {
+                        // Menge aktualisieren
+                        $stmt = $this->pdo->prepare("UPDATE cart SET quantity = quantity + ? WHERE user_id = ? AND product_id = ?");
+                        $stmt->execute([$quantity, $user['id'], $productId]);
+                    } else {
+                        // Neues Produkt hinzufügen
+                        $stmt = $this->pdo->prepare("INSERT INTO cart (user_id, product_id, quantity) VALUES (?, ?, ?)");
+                        $stmt->execute([$user['id'], $productId, $quantity]);
+                    }
+                }
+
+                // Session-Warenkorb leeren
+                unset($_SESSION['cart']);
+            }
+            
             return ['success' => true, 'message' => 'Login erfolgreich.'];
         }
     }

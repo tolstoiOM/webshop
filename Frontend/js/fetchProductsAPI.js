@@ -73,10 +73,9 @@ $(document).ready(function () {
         dataType: 'json', // Automatisch als JSON parsen
         success: function (sessionStatus) {
             if (sessionStatus.loggedIn) {
-                // Nur wenn der Benutzer angemeldet ist, wird der Warenkorb-Counter aktualisiert
                 updateCartCount();
             } else {
-                console.log('Benutzer ist nicht angemeldet. Warenkorb-Counter wird nicht aktualisiert.');
+                updateCartCount();
             }
         },
         error: function () {
@@ -115,9 +114,24 @@ $(document).ready(function () {
                         }
                     });
                 } else {
-                    // User is not logged in, redirect to the login page
-                    alert('Bitte melden Sie sich an, um Produkte in den Warenkorb zu legen.');
-                    window.location.href = '/Frontend/sites/login.php';
+                    // Benutzer ist nicht eingeloggt, Produkt in die Session legen
+                    $.ajax({
+                        url: '../../Backend/logic/updateCartSessionAPI.php',
+                        method: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ action: 'addToCart', productId: productId }), // Daten als JSON-String
+                        success: function (data) {
+                            if (data.success) {
+                                updateCartCount();
+                                alert('Produkt wurde dem Warenkorb hinzugefügt!');
+                            } else {
+                                console.error('Fehler in der Antwort:', data.message);
+                            }
+                        },
+                        error: function () {
+                            alert('Fehler beim Hinzufügen zum Warenkorb.');
+                        }
+                    });
                 }
             },
             error: function () {

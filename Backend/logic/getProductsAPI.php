@@ -31,12 +31,21 @@
             }
             exit();
         } elseif ($action === 'getCartCount') {
-            // Anzahl der Produkte im Warenkorb berechnen
-            $userId = $_SESSION['user_id'];
-            $stmt = $pdo->prepare("SELECT SUM(quantity) AS cartCount FROM cart WHERE user_id = ?");
-            $stmt->execute([$userId]);
-            $cartCount = $stmt->fetchColumn();
-
+            if (isset($_SESSION['user_id'])) {
+                // Eingeloggter Benutzer: Anzahl der Produkte aus der Datenbank abrufen
+                $userId = $_SESSION['user_id'];
+                $stmt = $pdo->prepare("SELECT SUM(quantity) AS cartCount FROM cart WHERE user_id = ?");
+                $stmt->execute([$userId]);
+                $cartCount = $stmt->fetchColumn();
+            } else {
+                // Nicht eingeloggter Benutzer: Anzahl der Produkte aus der Session abrufen
+                $cartCount = 0;
+                if (isset($_SESSION['cart'])) {
+                    foreach ($_SESSION['cart'] as $item) {
+                        $cartCount += $item['quantity'];
+                    }
+                }
+            }
             echo json_encode(['success' => true, 'cartCount' => $cartCount]);
             exit();
         } elseif ($action === 'getAllProducts') {

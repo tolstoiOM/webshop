@@ -31,11 +31,36 @@ document.addEventListener('DOMContentLoaded', function () {
                     <a href="/Backend/logic/logoutLogic.php" class="btn btn-danger ms-3">Logout</a>
                 `;
             } else {
-                // Show login button for guests
+                // Show shopping bag and login button for guests
                 navbarIcons.innerHTML += `
+                    <a href="/Frontend/sites/cart.php" class="nav-link text-dark p-2" id="cart-icon"><i class="fas fa-shopping-bag"> (<span id="cart-count">0</span>)</i></a>
                     <a href="/Frontend/sites/login.php" class="btn btn-dark ms-3">Login</a>
                 `;
             }
+            // Update the cart count for both logged-in and not logged-in users
+            updateCartCount();
         })
         .catch((error) => console.error('Error fetching session status:', error));
 });
+
+// Funktion zum Aktualisieren der Warenkorb-Anzahl
+function updateCartCount() {
+    fetch('/Backend/logic/getProductsAPI.php?action=getCartCount', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                const cartCountElement = document.getElementById('cart-count');
+                if (cartCountElement) {
+                    cartCountElement.textContent = data.cartCount;
+                }
+            } else {
+                console.error('Fehler beim Abrufen der Warenkorb-Anzahl:', data.message);
+            }
+        })
+        .catch((error) => console.error('Fehler beim Abrufen der Warenkorb-Anzahl:', error));
+}

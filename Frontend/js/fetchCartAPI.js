@@ -64,22 +64,54 @@ document.addEventListener('click', function (event) {
 
 // Funktion zum Aktualisieren des Warenkorbs
 function updateCart(action, productId) {
-    $.ajax({
-        url: '../../Backend/logic/getProductsAPI.php',
-        method: 'POST',
-        data: { action: action, productId: productId },
-        success: function (data) {
-            console.log("data: ", data);
-            if (data.success) {
-                updateCartCount(); // Warenkorb-Counter aktualisieren
-                refreshCart(); // Warenkorb-Daten aktualisieren
-            } else {
-                console.error('Fehler beim Aktualisieren des Warenkorbs:', data.message);
+        // Überprüfen, ob der Benutzer eingeloggt ist
+        $.ajax({
+            url: '/Backend/logic/getSessionStatus.php',
+            method: 'GET',
+            dataType: 'json',
+            success: function (sessionStatus) {
+                if (sessionStatus.loggedIn) {
+                    // Benutzer ist eingeloggt, Warenkorb in der Datenbank aktualisieren
+                    $.ajax({
+                        url: '../../Backend/logic/getProductsAPI.php',
+                        method: 'POST',
+                        data: { action: action, productId: productId },
+                        success: function (data) {
+                            console.log("data: ", data);
+                            if (data.success) {
+                                updateCartCount(); // Warenkorb-Counter aktualisieren
+                                refreshCart(); // Warenkorb-Daten aktualisieren
+                            } else {
+                                console.error('Fehler beim Aktualisieren des Warenkorbs:', data.message);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Fehler beim Aktualisieren des Warenkorbs:', error);
+                        }
+                    });
+                } else {
+                    // Benutzer ist nicht eingeloggt, Warenkorb in der Session aktualisieren
+                    $.ajax({
+                        url: '/Backend/logic/updateCartSessionAPI.php',
+                        method: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ action: action, productId: productId }),
+                        success: function (data) {
+                            if (data.success) {
+                                updateCartCount();
+                                refreshCart(); // Warenkorb-Daten aktualisieren
+                            } else {
+                                console.error('Fehler beim Aktualisieren des Warenkorbs:', data.message);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Fehler beim Aktualisieren des Warenkorbs:', error);
+                        }
+                    });
+                }
+            },
+            error: function () {
+                console.error('Fehler beim Überprüfen des Login-Status.');
             }
-        },
-        error: function (xhr, status, error) {
-            console.error('Fehler beim Aktualisieren des Warenkorbs:', error);
-            console.log("data: ", data);
-        }
-    });
+        });
 }
