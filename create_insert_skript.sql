@@ -33,7 +33,7 @@ CREATE TABLE products (
     name VARCHAR(255) NOT NULL,
     description TEXT,
     price DECIMAL(10, 2) NOT NULL,
-    rating DECIMAL(2, 1) NOT NULL,
+    rating VARCHAR(255) DEFAULT NULL,
     image_path VARCHAR(255),
     category_id INT,
     FOREIGN KEY (category_id) REFERENCES categories(id)
@@ -93,14 +93,13 @@ VALUES
 
 -- Beispiel-Produkte hinzufügen
 INSERT INTO products (name, description, price, rating, image_path, category_id) VALUES
-('Harry Potter und der Stein der Weisen', 'Das erste Buch der Harry Potter Reihe', 19.99, 4.8, '1.jpg', 1),
-('Harry Potter Zauberstab', 'Originalgetreuer Zauberstab von Harry Potter', 29.99, 4.7, '2.jpg', 2),
-('Slytherin Hoodie', 'Hoodie mit dem Slytherin-Logo', 39.99, 4.6, '../res/img/3.jpg', 3),
-('Hermine Granger Funko Pop', 'Sammlerfigur von Hermine Granger', 15.99, 4.9, '4.jpg', 4),
-('Hogwarts Uhr', 'Wand-Uhr im Hogwarts-Stil', 49.99, 4.5, '5.jpg', 5),
-('Dumbledore Ring', 'Ring von Albus Dumbledore', 99.99, 4.8, '6.jpg', 6),
-('Hogwarts Geschenkbox', 'Geschenkbox mit verschiedenen Harry Potter Souvenirs', 59.99, 4.7, '7.jpg', 7);
-
+('Harry Potter und der Stein der Weisen', 'Das erste Buch der Harry Potter Reihe', 19.99, 'Ein zauberhaftes Buch – ein Muss für Fans!', '1.jpg', 1),
+('Harry Potter Zauberstab', 'Originalgetreuer Zauberstab von Harry Potter', 29.99, 'Liegt super in der Hand – fast wie echte Magie!', '2.jpg', 2),
+('Slytherin Hoodie', 'Hoodie mit dem Slytherin-Logo', 39.99, 'Sehr bequem und stylisch – perfekt für Fans!', '3.jpg', 3),
+('Hermine Granger Funko Pop', 'Sammlerfigur von Hermine Granger', 15.99, 'Detailreich und niedlich – top Qualität!', '4.jpg', 4),
+('Hogwarts Uhr', 'Wand-Uhr im Hogwarts-Stil', 49.99, 'Tolle Optik – bringt Hogwarts-Feeling nach Hause.', '5.jpg', 5),
+('Dumbledore Ring', 'Ring von Albus Dumbledore', 99.99, 'Sehr edel – ein echtes Sammlerstück!', '6.jpg', 6),
+('Hogwarts Geschenkbox', 'Geschenkbox mit verschiedenen Harry Potter Souvenirs', 59.99, 'Wunderschön verpackt – ideal als Geschenk!', '7.jpg', 7);
 
 -- Beispiel-Bestellung hinzufügen
 INSERT INTO orders (user_id, total_price, status)

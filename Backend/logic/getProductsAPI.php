@@ -18,10 +18,10 @@
             try {
             
                 if ($categoryId === 'all') {
-                    $stmt = $pdo->query("SELECT id, name, description, price, CONCAT('/Backend/productpictures/', SUBSTRING_INDEX(image_path, '/', -1)) AS image_path FROM products");
+                    $stmt = $pdo->query("SELECT id, name, description, price, rating, CONCAT('/Backend/productpictures/', SUBSTRING_INDEX(image_path, '/', -1)) AS image_path FROM products");
                     $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 } else {
-                    $stmt = $pdo->prepare("SELECT id, name, description, price, CONCAT('/Backend/productpictures/', SUBSTRING_INDEX(image_path, '/', -1)) AS image_path FROM products WHERE category_id = ?");
+                    $stmt = $pdo->prepare("SELECT id, name, description, price, rating, CONCAT('/Backend/productpictures/', SUBSTRING_INDEX(image_path, '/', -1)) AS image_path FROM products WHERE category_id = ?");
                     $stmt->execute([$categoryId]);
                     $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 }

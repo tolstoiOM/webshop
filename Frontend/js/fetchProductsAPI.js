@@ -47,6 +47,7 @@ $(document).ready(function () {
                                             <h5 class="card-title">${product.name}</h5>
                                             <p class="card-text">${product.description}</p>
                                             <p class="card-text"><strong>Preis:</strong> €${product.price}</p>
+                                            <p class="card-text"><em><strong>Bewertung:</strong> ${product.rating || 'Wie immer, ein tolles Produkt.'}</em></p>
                                             <button class="btn btn-success add-to-cart" data-id="${product.id}">In den Warenkorb</button>
                                         </div>
                                     </div>
