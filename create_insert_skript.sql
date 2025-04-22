@@ -73,6 +73,15 @@ CREATE TABLE cart (
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 );
 
+-- Tabelle 'coupons' erstellen
+CREATE TABLE coupons (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(5) NOT NULL UNIQUE,
+    value DECIMAL(10, 2) NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    expires_at DATETIME NOT NULL
+);
+
 -- Kategorien einfügen
 INSERT INTO categories (name) VALUES
 ('Bücher'),
@@ -106,6 +115,19 @@ INSERT INTO orders (user_id, total_price, status)
 VALUES 
 (1, 45.99, 'pending'),
 (2, 25.00, 'completed');
+
+-- Beispiel-Gutscheine einfügen
+INSERT INTO coupons (code, value, created_at, expires_at) VALUES
+('A1B2C', 10.00, NOW(), DATE_ADD(NOW(), INTERVAL 30 DAY)),
+('D3E4F', 15.00, NOW(), DATE_ADD(NOW(), INTERVAL 60 DAY)),
+('G5H6I', 20.00, NOW(), DATE_ADD(NOW(), INTERVAL 90 DAY)),
+('J7K8L', 25.00, NOW(), DATE_ADD(NOW(), INTERVAL 120 DAY)),
+('M9N0O', 30.00, NOW(), DATE_ADD(NOW(), INTERVAL 150 DAY)),
+('P1Q2R', 35.00, NOW(), DATE_ADD(NOW(), INTERVAL 180 DAY)),
+('S3T4U', 40.00, NOW(), DATE_ADD(NOW(), INTERVAL 210 DAY)),
+('V5W6X', 45.00, NOW(), DATE_ADD(NOW(), INTERVAL 240 DAY)),
+('Y7Z8A', 50.00, NOW(), DATE_ADD(NOW(), INTERVAL 270 DAY)),
+('B9C0D', 55.00, NOW(), DATE_ADD(NOW(), INTERVAL 300 DAY));
 
 -- Rechte für einen Benutzer erstellen
 CREATE USER 'webprojectuser'@'localhost' IDENTIFIED BY 'xSnsN)F3!wg[vbPk';

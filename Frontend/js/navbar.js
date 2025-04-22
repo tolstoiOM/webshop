@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <a href="/Frontend/sites/myprofile.php" class="nav-link text-dark p-2"><i class="fas fa-user"></i></a>
                     <a href="/Frontend/sites/users.php" class="nav-link text-dark p-2"><i class="fas fa-users"></i></a>
                     <a href="/Frontend/sites/products.php" class="nav-link text-dark p-2"><i class="fas fa-box"></i></a>
+                    <a href="/Frontend/sites/coupons.php" class="nav-link text-dark p-2"><i class="fas fa-ticket-alt"></i></a>
                     <a href="/Backend/logic/logoutLogic.php" class="btn btn-danger ms-3">Logout</a>
                 `;
             } else if (data.loggedIn) {
