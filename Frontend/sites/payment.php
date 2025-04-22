@@ -21,6 +21,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="../js/writePaymentAPI.js" defer></script>
     <script src="../js/fetchProductsAPI.js" defer></script>
+    <script src="../js/fetchPaymentMethods.js" defer></script>
 </head>
 
 <body>
@@ -37,21 +38,11 @@
                     <div class="mb-3">
                         <label for="method" class="form-label">Zahlungsmethode</label>
                         <select class="form-select" id="method" name="method" required>
-                            <option value="Kreditkarte">Kreditkarte</option>
-                            <option value="Paypal">Paypal</option>
+                            <!-- Zahlungsmethoden werden hier dynamisch geladen -->
                         </select>
                     </div>
-                    <div id="creditCardDetails" class="mb-3" style="display: none;">
-                        <label for="cardNumber" class="form-label">Kreditkartennummer</label>
-                        <input type="text" class="form-control" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456">
-                        <label for="expiryDate" class="form-label mt-3">Ablaufdatum</label>
-                        <input type="text" class="form-control" id="expiryDate" name="expiryDate" placeholder="MM/YY">
-                        <label for="cvv" class="form-label mt-3">CVV</label>
-                        <input type="text" class="form-control" id="cvv" name="cvv" placeholder="123">
-                    </div>
-                    <div id="paypalDetails" class="mb-3" style="display: none;">
-                        <label for="paypalEmail" class="form-label">PayPal E-Mail</label>
-                        <input type="email" class="form-control" id="paypalEmail" name="paypalEmail" placeholder="example@email.com">
+                    <div id="paymentDetails" class="mb-3">
+                        <!-- Details der ausgewählten Zahlungsmethode werden hier angezeigt -->
                     </div>
                     <div id="payment-error" class="text-danger mb-3" style="display: none;"></div>
                     <button type="button" id="submitPayment" class="btn btn-primary">Zahlung durchführen</button>

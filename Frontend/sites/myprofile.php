@@ -21,6 +21,7 @@
     <script src="../js/fetchProfileDataAPI.js" defer></script>
     <script src="../js/updateProfileDataAPI.js" defer></script>
     <script src="../js/fetchProductsAPI.js" defer></script>
+    <script src="../js/paymentMethods.js" defer></script>
 </head>
 
 <body>
@@ -108,6 +109,36 @@
                     </form>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <h2 class="text-center">Zahlungsmethoden</h2>
+
+        <!-- Übersicht der Zahlungsmethoden -->
+        <div id="payment-methods-container" class="mt-4">
+            <!-- Zahlungsmethoden werden hier dynamisch geladen -->
+        </div>
+
+        <!-- Formular zum Hinzufügen einer Zahlungsmethode -->
+        <div class="mt-5">
+            <h3>Neue Zahlungsmethode hinzufügen</h3>
+            <form id="payment-method-form">
+                <div class="mb-3">
+                    <label for="method" class="form-label">Zahlungsmethode</label>
+                    <select class="form-select" id="method" name="method" required>
+                        <option value="Kreditkarte">Kreditkarte</option>
+                        <option value="Paypal">Paypal</option>
+                        <option value="Klarna">Klarna</option>
+                        <option value="Kauf auf Rechnung">Kauf auf Rechnung</option>
+                        <option value="Apple Pay">Apple Pay</option>
+                    </select>
+                </div>
+                <div id="payment-details-container" class="mb-3">
+                    <!-- Dynamische Felder für die Zahlungsmethode -->
+                </div>
+                <button type="submit" class="btn btn-primary">Speichern</button>
+            </form>
         </div>
     </div>
 </body>

@@ -82,6 +82,22 @@ CREATE TABLE coupons (
     expires_at DATETIME NOT NULL
 );
 
+-- Tabelle 'payment_methods' erstellen
+CREATE TABLE payment_methods (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    method ENUM('Kreditkarte', 'Paypal', 'Klarna', 'Kauf auf Rechnung', 'Apple Pay') NOT NULL,
+    card_number VARCHAR(16), -- Für Kreditkarte
+    expiry_date VARCHAR(5), -- MM/YY für Kreditkarte
+    cvv VARCHAR(3), -- Für Kreditkarte
+    paypal_email VARCHAR(255), -- Für Paypal
+    klarna_account VARCHAR(255), -- Für Klarna
+    billing_address VARCHAR(255), -- Für Kauf auf Rechnung
+    apple_pay_token VARCHAR(255), -- Für Apple Pay
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
 -- Kategorien einfügen
 INSERT INTO categories (name) VALUES
 ('Bücher'),
