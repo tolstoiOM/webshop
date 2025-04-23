@@ -49,6 +49,16 @@
                 </form>
             </div>
         </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h4>Gutscheincode</h4>
+            </div>
+            <div class="card-body">
+                <label for="couponCode" class="form-label"></label>
+                <input type="text" class="form-control" id="couponCode" name="coupon_code" placeholder="Gutscheincode eingeben">
+            </div>
+        </div>
     </div>
 </body>
 </html>

@@ -1,5 +1,6 @@
 <?php
     require_once '../../Backend/config/session.php';
+    require_once '../config/config.php';
     header('Content-Type: application/json');
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -10,14 +11,7 @@
 
         $userId = $_SESSION['user_id'];
         $method = $_POST['method'];
-
-        require_once '../config/config.php';
-
-        // Validierung der Zahlungsmethode
-        if ($method !== 'Kreditkarte' && $method !== 'Paypal') {
-            echo json_encode(['success' => false, 'message' => 'Ungültige Zahlungsmethode.']);
-            exit();
-        }
+        $couponCode = $_POST['coupon_code'] ?? null;
 
         try {
             // Produkte aus der `cart`-Tabelle abrufen
@@ -35,9 +29,31 @@
                 $totalAmount += $item['price'] * $item['quantity'];
             }
 
+            // Gutscheincode prüfen
+            $discount = 0;
+            if ($couponCode) {
+                $stmt = $pdo->prepare("SELECT * FROM coupons WHERE code = ? AND cashed = 0 AND expires_at > NOW()");
+                $stmt->execute([$couponCode]);
+                $coupon = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if ($coupon) {
+                    $discount = min($totalAmount, $coupon['residual_value'] ?? $coupon['value']);
+                    $totalAmount -= $discount;
+
+                    // Restwert berechnen
+                    $residualValue = ($coupon['residual_value'] ?? $coupon['value']) - $discount;
+
+                    // Gutschein aktualisieren
+                    $stmt = $pdo->prepare("UPDATE coupons SET residual_value = ?, cashed = ? WHERE id = ?");
+                    $stmt->execute([$residualValue, $residualValue <= 0 ? 1 : 0, $coupon['id']]);
+                } else {
+                    throw new Exception("Ungültiger oder abgelaufener Gutscheincode.");
+                }
+            }
+
             // Bestellung in der Tabelle `orders` speichern
-            $stmt = $pdo->prepare("INSERT INTO orders (user_id, total_price, status) VALUES (?, ?, 'pending')");
-            $stmt->execute([$userId, $totalAmount]);
+            $stmt = $pdo->prepare("INSERT INTO orders (user_id, total_price, payment_method, status) VALUES (?, ?, ?, 'pending')");
+            $stmt->execute([$userId, $totalAmount, $method]);
             $orderId = $pdo->lastInsertId(); // ID der neu erstellten Bestellung
 
             // Produkte in der Tabelle `order_items` speichern

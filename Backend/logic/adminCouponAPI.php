@@ -14,15 +14,21 @@
 
     if ($method === 'GET') {
         // Alle Gutscheine abrufen
-        $stmt = $pdo->query("SELECT id, code, value, created_at, expires_at FROM coupons");
+        $stmt = $pdo->query("SELECT id, code, value, residual_value, cashed, created_at, expires_at FROM coupons");
         $coupons = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Status (gültig/abgelaufen) hinzufügen
+        // Status (gültig/abgelaufen/eingelöst) hinzufügen
         foreach ($coupons as &$coupon) {
-            $coupon['status'] = (new DateTime($coupon['expires_at']) > new DateTime()) ? 'Gültig' : 'Abgelaufen';
+            if ($coupon['cashed'] == 1 && $coupon['residual_value'] == 0) {
+                $coupon['status'] = 'Eingelöst';
+            } elseif (new DateTime($coupon['expires_at']) < new DateTime()) {
+                $coupon['status'] = 'Abgelaufen';
+            } else {
+                $coupon['status'] = 'Gültig';
+            }
         }
-
         echo json_encode(['success' => true, 'coupons' => $coupons]);
+
     } elseif ($method === 'POST') {
         // Neuen Gutschein erstellen
         $value = $_POST['value'];

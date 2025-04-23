@@ -46,6 +46,7 @@ CREATE TABLE orders (
     total_price DECIMAL(10, 2) NOT NULL,
     status ENUM('pending', 'completed', 'canceled') NOT NULL DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	payment_method VARCHAR(50) DEFAULT NULL, -- Zahlungsmethode
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
@@ -79,7 +80,9 @@ CREATE TABLE coupons (
     code VARCHAR(5) NOT NULL UNIQUE,
     value DECIMAL(10, 2) NOT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    expires_at DATETIME NOT NULL
+    expires_at DATETIME NOT NULL,
+	cashed TINYINT(1) DEFAULT 0, -- 0 = nicht eingelöst, 1 = eingelöst
+    residual_value DECIMAL(10, 2) DEFAULT NULL -- Restwert des Gutscheins
 );
 
 -- Tabelle 'payment_methods' erstellen
