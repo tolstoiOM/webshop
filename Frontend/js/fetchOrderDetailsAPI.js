@@ -21,6 +21,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const order = response.order;
             const orderItems = response.orderItems;
             const isAdmin = response.isAdmin;
+            const discount = response.discount;
+            const originalPrice = response.originalPrice;
 
             let html = `
                 <div class="card">
@@ -28,9 +30,16 @@ document.addEventListener('DOMContentLoaded', function () {
                         <h4>Bestelldetails</h4>
                     </div>
                     <div class="card-body">
+                        <p><strong>Rechnungsnummer:</strong> ${order.invoice_number}</p>
                         <p><strong>Bestellnummer:</strong> ${order.id}</p>
-                        <p><strong>Datum:</strong> ${order.created_at}</p>
-                        <p><strong>Gesamtbetrag:</strong> €${parseFloat(order.total_price).toFixed(2)}</p>
+                        <p><strong>Datum:</strong> ${new Date(order.created_at).toLocaleDateString('de-DE')}</p>
+                        <p><strong>Name:</strong> ${order.first_name} ${order.last_name}</p>
+                        <p><strong>Adresse:</strong> ${order.address}, ${order.zip} ${order.city}</p>
+                        <p><strong>E-Mail:</strong> ${order.email}</p>
+                        <p><strong>Zahlungsmethode:</strong> ${order.payment_method}</p>
+                        <p><strong>Gesamtbetrag (ohne Rabatt):</strong> €${parseFloat(originalPrice).toFixed(2)}</p>
+                        <p><strong>Rabatt:</strong> €${parseFloat(discount).toFixed(2)}</p>
+                        <p><strong>Zu zahlender Betrag:</strong> €${parseFloat(order.total_price).toFixed(2)}</p>
                         <h5 class="mt-4">Produkte</h5>
                         <table class="table table-bordered">
                             <thead>
@@ -102,7 +111,26 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
                 });
             }
-        })
+
+            // Event-Listener für den "Rechnung drucken"-Button
+            document.getElementById('printInvoice').addEventListener('click', function () {
+                const element = document.getElementById('orderDetails');
+
+                const opt = {
+                    margin:       [10, 10, 10, 10], // top, left, bottom, right
+                    filename:     'Rechnung.pdf',
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    html2canvas:  { scale: 2, scrollY: 0 },
+                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                    pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+                };
+
+                html2pdf().set(opt).from(element).outputPdf('blob').then(function (pdfBlob) {
+                    const pdfUrl = URL.createObjectURL(pdfBlob);
+                    window.open(pdfUrl, '_blank');
+                });
+            })
+    })
     .catch(() => {
         orderDetailsContainer.innerHTML = '<div class="alert alert-danger">Fehler beim Abrufen der Bestelldetails.</div>';
     });

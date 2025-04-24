@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 // Show shopping bag and login button for guests
                 navbarIcons.innerHTML += `
-                    <a href="/Frontend/sites/cart.php" class="nav-link text-dark p-2" id="cart-icon"><i class="fas fa-shopping-bag"> (<span id="cart-count">0</span>)</i></a>
+                    <a href="/Frontend/sites/cart.php" class="nav-link text-dark p-2" id="cart-icon" ondragover="handleDragOver(event)" ondrop="handleDrop(event)"><i class="fas fa-shopping-bag"> (<span id="cart-count">0</span>)</i></a>
                     <a href="/Frontend/sites/login.php" class="btn btn-dark ms-3">Login</a>
                 `;
             }

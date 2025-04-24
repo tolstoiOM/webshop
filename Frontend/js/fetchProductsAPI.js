@@ -282,19 +282,51 @@ function handleDrop(event) {
 
     // AJAX-Request um das Produkt zum Warenkorb hinzuzufügen
     $.ajax({
-        url: '../../Backend/logic/getProductsAPI.php',  // Ziel-URL
-        method: 'POST',  // HTTP-Methode
-        data: { action: 'addToCart', productId: productId },  // Daten
-        success: function(data) {
-            if (data.success) {
-                updateCartCount();  // Warenkorb-Counter aktualisieren
-                alert('Produkt wurde dem Warenkorb hinzugefügt!');
+        url: '../../Backend/logic/getSessionStatus.php', // Check session status
+        method: 'GET',
+        dataType: 'json', // Automatically parse the response as JSON
+        success: function (sessionStatus) {
+            console.log('Parsed Response:', sessionStatus); // Log the parsed response
+
+            if (sessionStatus.loggedIn) {
+                // User is logged in, proceed to add the product to the cart
+                $.ajax({
+                    url: '../../Backend/logic/getProductsAPI.php',  // Ziel-URL
+                    method: 'POST',  // HTTP-Methode
+                    data: { action: 'addToCart', productId: productId },  // Daten
+                    success: function(data) {
+                        if (data.success) {
+                            updateCartCount();  // Warenkorb-Counter aktualisieren
+                            alert('Produkt wurde dem Warenkorb hinzugefügt!');
+                        } else {
+                            console.error('Fehler beim Hinzufügen zum Warenkorb:', data.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Fehler beim Hinzufügen zum Warenkorb:', error);
+                    }
+                });
+
             } else {
-                console.error('Fehler beim Hinzufügen zum Warenkorb:', data.message);
+                // Benutzer ist nicht eingeloggt, Produkt in die Session legen
+                $.ajax({
+                    url: '../../Backend/logic/updateCartSessionAPI.php',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ action: 'addToCart', productId: productId }), // Daten als JSON-String
+                    success: function (data) {
+                        if (data.success) {
+                            updateCartCount();
+                            alert('Produkt wurde dem Warenkorb hinzugefügt!');
+                        } else {
+                            console.error('Fehler in der Antwort:', data.message);
+                        }
+                    },
+                    error: function () {
+                        alert('Fehler beim Hinzufügen zum Warenkorb.');
+                    }
+                });
             }
-        },
-        error: function(xhr, status, error) {
-            console.error('Fehler beim Hinzufügen zum Warenkorb:', error);
         }
     });
 }

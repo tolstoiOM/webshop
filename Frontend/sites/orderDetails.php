@@ -20,6 +20,9 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="../js/fetchOrderDetailsAPI.js" defer></script>
         <script src="../js/fetchProductsAPI.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+        <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     </head>
 
     <body>
@@ -32,6 +35,7 @@
             <!-- Link zur Startseite -->
             <div class="text-center mt-4">
                 <a href="/index.php" class="btn btn-primary">Zurück zur Startseite</a>
+                <button id="printInvoice" class="btn btn-secondary">Rechnung drucken</button>
             </div>
         </div>
     </body>

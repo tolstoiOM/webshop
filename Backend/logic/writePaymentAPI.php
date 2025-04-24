@@ -56,6 +56,13 @@
             $stmt->execute([$userId, $totalAmount, $method]);
             $orderId = $pdo->lastInsertId(); // ID der neu erstellten Bestellung
 
+            // Rechnungsnummer generieren
+            $invoiceNumber = sprintf('INV-%06d', $orderId);
+
+            // Rechnungsnummer in der Bestellung speichern
+            $stmt = $pdo->prepare("UPDATE orders SET invoice_number = ? WHERE id = ?");
+            $stmt->execute([$invoiceNumber, $orderId]);
+
             // Produkte in der Tabelle `order_items` speichern
             $stmt = $pdo->prepare("INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)");
             foreach ($cartItems as $item) {
